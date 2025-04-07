@@ -96,14 +96,23 @@ public class TmsDbContext : DbContext
             switch (entity.State)
             {
                 case EntityState.Added:
+                {
                     entity.Entity.CreatedOn = currentTime;
                     entity.Entity.CreatedBy = defaultUser;
+                    
+                    entity.Entity.ModifiedOn = currentTime;
+                    entity.Entity.ModifiedBy = string.Empty;
+                    
                     break;
-                
+                }
+
                 case EntityState.Modified:
+                {
                     entity.Entity.ModifiedBy = defaultUser;
                     entity.Entity.ModifiedOn = currentTime;
+                    
                     break;
+                }
             }
         }
 

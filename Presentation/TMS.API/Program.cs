@@ -1,3 +1,4 @@
+using Dapper;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using TMS.API.Endpoints;
@@ -10,6 +11,7 @@ using TMS.Application.Features.Employees.ValidationHelpers;
 using TMS.Application.Repositories.EmployeeRepository;
 using TMS.Infrastructure.ConnectionFactory;
 using TMS.Infrastructure.Persistence.Context;
+using TMS.Infrastructure.Persistence.Dapper;
 using TMS.Infrastructure.Persistence.Repositories.EmployeeRepository;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -36,6 +38,8 @@ builder.Services.RegisterValidators();
 
 builder.Services.AddMediatR(cfg => 
     cfg.RegisterServicesFromAssembly(typeof(MediatorRegister).Assembly));
+
+SqlMapper.AddTypeHandler(new UlidTypeHandler());
 
 var app = builder.Build();
 

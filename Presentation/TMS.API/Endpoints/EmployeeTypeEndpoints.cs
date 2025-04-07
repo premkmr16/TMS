@@ -20,6 +20,8 @@ public static class EmployeeTypeEndpoints
     {
         var employeeTypeGroup = app.MapGroup(EmployeeTypeGroup.Group);
 
+        #region Add
+
         employeeTypeGroup.MapPost(EmployeeType.AddEmployeeType,
                 async (CreateEmployeeTypeRequest employeeTypeRequest,
                     IMediator mediator,
@@ -40,39 +42,17 @@ public static class EmployeeTypeEndpoints
                         EmployeeTypeGroup.Group, EmployeeType.AddEmployeeType, employeeTypeResponse);
 
                     return employeeTypeResponse is not null
-                        ? Results.Created()
+                        ? Results.Created($"/{EmployeeTypeGroup.Group}/{employeeTypeResponse.Id}",  employeeTypeResponse)
                         : Results.UnprocessableEntity();
                 }
             )
             .WithTags("Employee Type")
             .WithName("AddEmployeeTypeEndpoint")
             .WithSummary("Creates new employee type and returns the created record.");
+        
+        #endregion
 
-
-        employeeTypeGroup.MapGet(EmployeeType.GetEmployeeTypes,
-                async (IMediator mediator,
-                    ILoggerFactory loggerFactory,
-                    CancellationToken cancellationToken) =>
-                {
-                    var logger = loggerFactory.CreateLogger(nameof(EmployeeTypeEndpoints));
-
-                    logger.LogInformation("[{Group}].[{API}] - execution started successfully", EmployeeTypeGroup.Group,
-                        EmployeeType.GetEmployeeTypes);
-
-                    var employeeTypeResponse =
-                        await mediator.Send(new GetEmployeeTypes(), cancellationToken);
-
-                    logger.LogInformation(
-                        "[{Group}].[{API}] - execution completed successfully with output : {@EmployeeTypeResponse}",
-                        EmployeeTypeGroup.Group, EmployeeType.AddEmployeeType, employeeTypeResponse);
-
-                    return Results.Ok(employeeTypeResponse);
-                }
-            )
-            .WithTags("Employee Type")
-            .WithName("GetEmployeeTypeEndpoint")
-            .WithSummary("Returns all employee types.");
-
+        #region GetAll
 
         employeeTypeGroup.MapGet(EmployeeType.GetEmployeeTypes,
                 async (IMediator mediator,
@@ -97,7 +77,10 @@ public static class EmployeeTypeEndpoints
             .WithTags("Employee Type")
             .WithName("GetEmployeeTypesEndpoint")
             .WithSummary("Returns all employee types.");
-
+        
+        #endregion
+        
+        #region Get
 
         employeeTypeGroup.MapGet(EmployeeType.GetEmployeeType,
                 async (Ulid employeeTypeId,
@@ -126,5 +109,7 @@ public static class EmployeeTypeEndpoints
             .WithTags("Employee Type")
             .WithName("GetEmployeeTypeEndpoint")
             .WithSummary("Returns employee types for the given employee type id.");
+        
+        #endregion
     }
 }

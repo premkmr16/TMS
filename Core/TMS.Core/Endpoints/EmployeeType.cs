@@ -11,5 +11,5 @@ public static class EmployeeType
     
     public const string GetEmployeeTypes= "get";
     
-    public const string GetEmployeeType= "{id}";
+    public const string GetEmployeeType= "{employeeTypeId}";
 }

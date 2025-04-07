@@ -1,4 +1,3 @@
-using TMS.Application.Features.Employees.Contracts;
 using TMS.Application.Features.Employees.Contracts.Get;
 using TMS.Core.Entities;
 
@@ -44,9 +43,9 @@ public interface IEmployeeReadRepository
     public Task<List<EmployeeType>> GetEmployeeTypes();
 
     /// <summary>
-    /// 
+    /// Implements the functionality to return employee type by name.
     /// </summary>
-    /// <param name="employeeTypeName"></param>
-    /// <returns></returns>
+    /// <param name="employeeTypeName">Defines the type of employee</param>
+    /// <returns>The employee type <see cref="EmployeeType"/>.</returns>
     public Task<EmployeeType> GetEmployeeTypeByName(string employeeTypeName);
 }

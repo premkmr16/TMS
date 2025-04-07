@@ -106,6 +106,15 @@ public class ExceptionHandlingMiddleware
                     "File: {File} | Method: {Method} | An error occurred while saving the entity to the database with the following error message: {ErrorMessage}",
                     filePath, methodName, dbUpdateException.Message);
                 break;
+            
+            case ArgumentException argumentException:
+                statusCode = HttpStatusCode.BadRequest;
+                errorMessage = argumentException.Message;
+                
+                _logger.LogError(argumentException,
+                    "File: {File} | Method: {Method} | An error occurred with the following error message: {ErrorMessage}",
+                    filePath, methodName, argumentException.Message);
+                break;
 
             default:
                 statusCode = HttpStatusCode.InternalServerError;

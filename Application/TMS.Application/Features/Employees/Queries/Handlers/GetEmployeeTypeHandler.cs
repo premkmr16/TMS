@@ -72,13 +72,16 @@ public class GetEmployeeTypeHandler : IRequestHandler<GetEmployeeType, EmployeeT
             "[{Handler}].[{Method}] - Execution started successfully with input EmployeeTypeid : {EmployeeTypeId}",
             HandlerName, methodName, request.EmployeeTypeId);
 
+        if (!Ulid.TryParse(request.EmployeeTypeId.ToString(), out var employeeTypeId) || employeeTypeId == Ulid.Empty)
+            throw new ArgumentException($"Employee Type Id {request.EmployeeTypeId} is not in valid format");
+
         var employeeType = await _employeeReadRepository.GetEmployeeType(request.EmployeeTypeId.ToString());
         
         var employeeTypeResponse = _mapper.Map<EmployeeTypeResponse>(employeeType);
         
         _logger.LogInformation(
             "[{Handler}].[{Method}] - Execution completed successfully with output : {@EmployeeResponse}",
-            HandlerName, methodName, employeeTypeResponse);
+            HandlerName, methodName, employeeTypeResponse);     
         
         return employeeTypeResponse;
     }
