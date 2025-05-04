@@ -10,10 +10,21 @@ namespace TMS.Application.Common.Excel.Handlers;
 /// </summary>
 public class ExportInformationHandler : IRequestHandler<ExportInformation, byte[]>
 {
+    #region Fields
+    
+    /// <summary>
+    /// 
+    /// </summary>
+    private const string HandlerName = nameof(ExportInformationHandler);
+    
     /// <summary>
     /// 
     /// </summary>
     private readonly ILogger<ExportInformationHandler> _logger;
+    
+    #endregion
+    
+    #region Constructors
 
     /// <summary>
     /// 
@@ -24,6 +35,10 @@ public class ExportInformationHandler : IRequestHandler<ExportInformation, byte[
         _logger = logger;
     }
     
+    #endregion
+
+    #region Handler
+    
     /// <summary>
     /// 
     /// </summary>
@@ -32,6 +47,11 @@ public class ExportInformationHandler : IRequestHandler<ExportInformation, byte[
     /// <returns></returns>
     public async Task<byte[]> Handle(ExportInformation request, CancellationToken cancellationToken)
     {
+        const string methodName = nameof(Handle);
+        
+        _logger.LogInformation("[{Handler}].[{Method}] - Execution started successfully with input : {ExportRequest}", 
+            HandlerName, methodName, request.ExcelRequest);
+        
         var workBook = new XLWorkbook();
         var worksheet = workBook.Worksheets.Add(request.ExcelRequest.WorkSheetName);
 
@@ -44,8 +64,8 @@ public class ExportInformationHandler : IRequestHandler<ExportInformation, byte[
         headerRow.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
         headerRow.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
         
-        for (var i = 0; i < request.ExcelRequest.Headers.Count; i++)
-            worksheet.Cell(currentRow, i + 1).Value = request.ExcelRequest.Headers[i];
+        for (var column = 0; column < request.ExcelRequest.Headers.Count; column++)
+            worksheet.Cell(currentRow, column + 1).Value = request.ExcelRequest.Headers[column];
         
         foreach (var data in request.ExcelRequest.Data)
         {
@@ -69,7 +89,11 @@ public class ExportInformationHandler : IRequestHandler<ExportInformation, byte[
         var stream = new MemoryStream();
         workBook.SaveAs(stream);
         var content = stream.ToArray();
+        
+        _logger.LogInformation("[{Handler}].[{Method}] - Execution completed successfully", HandlerName, methodName);
 
         return await Task.FromResult(content);
     }
+    
+    #endregion
 }

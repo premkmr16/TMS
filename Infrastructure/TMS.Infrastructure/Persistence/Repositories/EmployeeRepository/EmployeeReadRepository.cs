@@ -119,22 +119,25 @@ public class EmployeeReadRepository : IEmployeeReadRepository
         _logger.LogDebug("{Repository}.{Method} - Established connection to Database Successfully", RepositoryName,
             methodName);
 
-        var employees =
+        var employees = 
             await connection.QueryFirstOrDefaultAsync<string>(
                 sql: EmployeeQueries.GetEmployeesQuery,
                 param: new
                 {
-                    request.SortField, request.SortDirection, request.PageSize, request.PageNumber,
-                    Filters = request.Filters is { Count: > 0 } ? JsonSerializer.Serialize(request.Filters) : "{}",
+                    request.SortField, 
+                    request.SortDirection, 
+                    request.PageSize, 
+                    request.PageNumber,
+                    Filters = request.Filters is { Count: > 0 } 
+                        ? JsonSerializer.Serialize(request.Filters) 
+                        : "{}",
                     request.FetchWithPagination
                 },
                 commandType: CommandType.Text,
                 commandTimeout: 10
             );
 
-        var employeeResponse =
-            JsonSerializer.Deserialize<PaginatedResponse<EmployeeResponse>>(
-                employees, new JsonSerializerOptions { WriteIndented = true });
+        var employeeResponse = JsonSerializer.Deserialize<PaginatedResponse<EmployeeResponse>>(employees);
 
         _logger.LogInformation("{Repository}.{Method} - Execution completed successfully with output : {@Employees}",
             RepositoryName, methodName, employeeResponse);

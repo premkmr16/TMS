@@ -13,6 +13,9 @@ namespace TMS.Application.Features.Employees.Queries.Handlers;
 /// </summary>
 public class ExportEmployeeHandler : IRequestHandler<ExportEmployees, byte[]>
 {
+
+    #region Fields
+    
     /// <summary>
     /// 
     /// </summary>
@@ -32,6 +35,10 @@ public class ExportEmployeeHandler : IRequestHandler<ExportEmployees, byte[]>
     /// 
     /// </summary>
     private readonly ILogger<ExportEmployeeHandler> _logger;
+    
+    #endregion
+    
+    #region Contructors
 
     /// <summary>
     /// 
@@ -48,6 +55,10 @@ public class ExportEmployeeHandler : IRequestHandler<ExportEmployees, byte[]>
         _logger = logger;
         _excelHelper = excelHelper;
     }
+    
+    #endregion
+    
+    #region Handlers
 
     /// <summary>
     /// 
@@ -78,7 +89,8 @@ public class ExportEmployeeHandler : IRequestHandler<ExportEmployees, byte[]>
                 employee.StartDate.Date.ToString(Excel.DateFormat),
                 employee.EndDate is not null
                     ? employee.EndDate.Value.Date.ToString(Excel.DateFormat)
-                    : string.Empty,] , 
+                    : string.Empty
+            ], 
             employeeResponse.Data, 
             Employee.WorkSheetName, 
             Employee.FileName);
@@ -89,4 +101,6 @@ public class ExportEmployeeHandler : IRequestHandler<ExportEmployees, byte[]>
         
         return excelBytes;
     }
+    
+    #endregion
 }
