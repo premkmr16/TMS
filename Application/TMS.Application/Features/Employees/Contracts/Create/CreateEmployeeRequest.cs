@@ -6,10 +6,16 @@ namespace TMS.Application.Features.Employees.Contracts.Create;
 public class CreateEmployeeRequest : BaseEmployeeContract
 {
     /// <summary>
-    /// Gets or Sets the UniqueId of EmployeeType.
-    /// <example>01JM6XD97M4S0Y7WC1RXYQJMHS</example>
+    /// Gets or sets the Employee Name.
+    /// <example>819101</example>
     /// </summary>
-    public Ulid EmployeeTypeId { get; set; }
+    public string EmployeeNumber { get; set; }
+    
+    /// <summary>
+    /// Gets or sets the Employee EmailAddress.
+    /// <example>johndoe@gmail.com</example>
+    /// </summary>
+    public string Email { get; set; }
     
     /// <summary>
     /// Gets or sets the Verification Status of Employee Details.

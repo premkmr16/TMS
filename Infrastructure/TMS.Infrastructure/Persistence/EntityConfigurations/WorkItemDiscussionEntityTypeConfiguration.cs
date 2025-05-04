@@ -16,7 +16,7 @@ public class WorkItemDiscussionEntityTypeConfiguration : IEntityTypeConfiguratio
     public void Configure(EntityTypeBuilder<WorkItemDiscussion> builder)
     {
         builder.HasKey(x => x.Id);
-        builder.Property(e => e.Id).HasColumnType("varchar(26)").HasConversion(v => v.ToString(), v => Ulid.Parse(v));
+        builder.Property(e => e.Id).HasColumnType("varchar(26)").IsRequired();
         builder.Property(x => x.WorkItemId).HasColumnType("varchar(26)").IsRequired();
         builder.Property(x => x.Discussion).HasColumnType("text").IsRequired();
         builder.Property(x => x.CreatedBy).HasColumnType("varchar(50)").IsRequired();

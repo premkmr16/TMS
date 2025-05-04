@@ -63,11 +63,14 @@ public class GetEmployeeByNumberOrEmailHandler : IRequestHandler<GetEmployeeByNu
             "[{Handler}].[{Method}] - Execution started successfully with input EmployeeNumber : {EmployeeNUmber} and EmailAddress : {EmailAddress}",
             HandlerName, methodName, request.EmployeeNumber, request.EmailAddress);
 
+        if (string.IsNullOrWhiteSpace(request.EmployeeNumber) && string.IsNullOrWhiteSpace(request.EmailAddress))
+            throw new InvalidOperationException("Either EmployeeNumber or EmailAddress must be provided");
+
         var employee =
             await _employeeReadRepository.GetEmployeeByNumberOrEmail(request.EmployeeNumber, request.EmailAddress);
 
         var employeeResponse = employee.SingleOrDefault(e => 
-            e.EmployeeNumber == request.EmployeeNumber && e.Email == request.EmailAddress);
+            e.EmployeeNumber == request.EmployeeNumber || e.Email == request.EmailAddress);
 
         _logger.LogInformation(
             "[{Handler}].[{Method}] - Execution completed successfully with output : {@EmployeeResponse}",

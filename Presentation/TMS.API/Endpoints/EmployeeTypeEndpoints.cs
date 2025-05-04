@@ -16,7 +16,7 @@ public static class EmployeeTypeEndpoints
     /// Maps the Employee Type endpoints to the application's endpoint routing system.
     /// </summary>
     /// <param name="app">The <see cref="IEndpointRouteBuilder"/> instance to configure endpoints on.</param>
-    public static void MapToEmployeesEndpoints(this IEndpointRouteBuilder app)
+    public static void MapToEmployeeTypeEndpoints(this IEndpointRouteBuilder app)
     {
         var employeeTypeGroup = app.MapGroup(EmployeeTypeGroup.Group);
 
@@ -43,7 +43,7 @@ public static class EmployeeTypeEndpoints
 
                     return employeeTypeResponse is not null
                         ? Results.Created($"/{EmployeeTypeGroup.Group}/{employeeTypeResponse.Id}",  employeeTypeResponse)
-                        : Results.UnprocessableEntity();
+                        : Results.NoContent();
                 }
             )
             .WithTags("Employee Type")
@@ -83,7 +83,7 @@ public static class EmployeeTypeEndpoints
         #region Get
 
         employeeTypeGroup.MapGet(EmployeeType.GetEmployeeType,
-                async (Ulid employeeTypeId,
+                async (string employeeTypeId,
                     IMediator mediator,
                     ILoggerFactory loggerFactory,
                     CancellationToken cancellationToken) =>
@@ -108,7 +108,7 @@ public static class EmployeeTypeEndpoints
             )
             .WithTags("Employee Type")
             .WithName("GetEmployeeTypeEndpoint")
-            .WithSummary("Returns employee types for the given employee type id.");
+            .WithSummary("Returns employee type for the given employee type id.");
         
         #endregion
     }

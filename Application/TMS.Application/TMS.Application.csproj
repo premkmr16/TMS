@@ -12,9 +12,12 @@
 
     <ItemGroup>
       <Folder Include="Common\Behaviours\" />
+      <Folder Include="Features\AutoSchemaQL\Queries\Handlers\" />
+      <Folder Include="Features\AutoSchemaQL\Queries\Requests\" />
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="ClosedXML" Version="0.104.2" />
       <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
       <PackageReference Include="Mapster" Version="7.4.0" />
       <PackageReference Include="MediatR" Version="12.4.1" />

@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using TMS.Core.Entities;
 
 namespace TMS.Infrastructure.Persistence.Extensions;
 
@@ -35,8 +34,8 @@ public static class ModelBuilderExtensions
             var entityType = entry.Entity.GetType();
             var idProperty = entityType.GetProperty("Id");
 
-            if (entry.State == EntityState.Added && idProperty != null && idProperty.PropertyType == typeof(Ulid))
-                idProperty.SetValue(entry.Entity, Ulid.NewUlid());
+            if (entry.State == EntityState.Added && idProperty != null && idProperty.PropertyType == typeof(string))
+                idProperty.SetValue(entry.Entity, Ulid.NewUlid().ToString());
         }   
     }
 
@@ -45,12 +44,12 @@ public static class ModelBuilderExtensions
     /// This method pre-populates tables with default values.
     /// </summary>
     /// <param name="modelBuilder"></param>
-    public static void SetupInitialEntities(this ModelBuilder modelBuilder) 
-    {
-        modelBuilder.Entity<Category>().SeedCategory();
-        modelBuilder.Entity<Priority>().SeedPriority();
-        modelBuilder.Entity<Status>().SeedStatus();
-        modelBuilder.Entity<EmployeeType>().SeedEmployeeType();
-        modelBuilder.Entity<ProjectRole>().SeedProjectRole();
-    }
+    // public static void SetupInitialEntities(this ModelBuilder modelBuilder) 
+    // {
+    //     modelBuilder.Entity<Category>().SeedCategory();
+    //     modelBuilder.Entity<Priority>().SeedPriority();
+    //     modelBuilder.Entity<Status>().SeedStatus();
+    //     modelBuilder.Entity<EmployeeType>().SeedEmployeeType();
+    //     modelBuilder.Entity<ProjectRole>().SeedProjectRole();
+    // }
 }

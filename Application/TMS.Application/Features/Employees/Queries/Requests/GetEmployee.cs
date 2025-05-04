@@ -7,4 +7,4 @@ namespace TMS.Application.Features.Employees.Queries.Requests;
 /// The Query to get Employee by using Unique Identifier of Employee.
 /// </summary>
 /// <param name="EmployeeId"></param>
-public record GetEmployee(Ulid EmployeeId) :  IRequest<EmployeeResponse>;
+public record GetEmployee(string EmployeeId) :  IRequest<EmployeeResponse>;

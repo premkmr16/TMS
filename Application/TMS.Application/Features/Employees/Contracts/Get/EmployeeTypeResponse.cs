@@ -11,7 +11,7 @@ public class EmployeeTypeResponse : TrackableEntity
     /// Gets or Sets the Unique Identifier for EmployeeType.
     /// <example>01JM6XC67ZMNQN2W3P63RG98KP</example>
     /// </summary>
-    public Ulid Id { get; set; }
+    public string Id { get; set; }
     
     /// <summary>
     /// Gets or Sets the Type of Employee.

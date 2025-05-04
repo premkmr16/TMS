@@ -16,7 +16,7 @@ public class ProjectMemberEntityTypeConfiguration : IEntityTypeConfiguration<Pro
     public void Configure(EntityTypeBuilder<ProjectMember> builder)
     {
         builder.HasKey(x => x.Id);
-        builder.Property(e => e.Id).HasColumnType("varchar(26)").HasConversion(v => v.ToString(), v => Ulid.Parse(v));
+        builder.Property(e => e.Id).HasColumnType("varchar(26)").IsRequired();
         builder.Property(x => x.ProjectId).HasColumnType("varchar(26)").IsRequired();
         builder.Property(x => x.EmployeeId).HasColumnType("varchar(26)").IsRequired();
         builder.Property(x => x.RoleId).IsRequired();

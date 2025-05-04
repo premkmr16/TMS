@@ -33,7 +33,7 @@ public class GetEmployeeHandler : IRequestHandler<GetEmployee, EmployeeResponse>
     #region Constructors
 
     /// <summary>
-    /// Initializes the new instance of <see cref="GetEmployeeByNumberOrEmailHandler"/>
+    /// Initializes the new instance of <see cref="GetEmployeeHandler"/>
     /// </summary>
     /// <param name="employeeReadRepository">Defines the Employee Repository <see cref="IEmployeeReadRepository"/>.</param>
     /// <param name="logger">Defines the logger instance of <see cref="GetEmployeeHandler"/></param>
@@ -63,7 +63,10 @@ public class GetEmployeeHandler : IRequestHandler<GetEmployee, EmployeeResponse>
             "[{Handler}].[{Method}] - Execution started successfully with input EmployeeId : {EmployeeId}", HandlerName,
             methodName, request.EmployeeId);
         
-        var employee = await _employeeReadRepository.GetEmployee(request.EmployeeId.ToString());
+        if (!Ulid.TryParse(request.EmployeeId, out var employeeId) || employeeId == Ulid.Empty)
+            throw new ArgumentException($"Employee Id {request.EmployeeId} is not in valid format");
+        
+        var employee = await _employeeReadRepository.GetEmployee(request.EmployeeId);
         
         _logger.LogInformation(
             "[{Handler}].[{Method}] - Execution completed successfully with output : {@EmployeeResponse}",

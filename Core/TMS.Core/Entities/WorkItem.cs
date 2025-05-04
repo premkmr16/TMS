@@ -10,7 +10,7 @@ public sealed class WorkItem : TrackableEntity
     /// Gets or Sets the Unique Identifier for WorkItem.
     /// <example>01JM6XC67ZMNQN2W3P63RG98KP</example>
     /// </summary>
-    public Ulid Id { get; set; }
+    public string Id { get; set; }
     
     /// <summary>
     /// Gets or Sets the Unique Identifier Integer for WorkItem.
@@ -22,7 +22,7 @@ public sealed class WorkItem : TrackableEntity
     /// Gets or Sets the Unique Identifier of Project Member.
     /// <example>01JM6XD97M4S0Y7WC1RXYQJMHS</example>
     /// </summary>
-    public Ulid MemberId { get; set; }
+    public string MemberId { get; set; }
     
     /// <summary>
     /// Gets or Sets the Project Member Details.
@@ -44,7 +44,7 @@ public sealed class WorkItem : TrackableEntity
     /// Gets or Sets the Unique Identifier of Priority.
     /// <example>01JMAE893SDEJZX5K190SNA6V8</example>
     /// </summary>
-    public Ulid PriorityId { get; set; }
+    public string PriorityId { get; set; }
     
     /// <summary>
     /// Gets or Sets the Status Details.
@@ -55,7 +55,7 @@ public sealed class WorkItem : TrackableEntity
     /// Gets or Sets the Unique Identifier of Status.
     /// <example>01JMAFJXZN4Y27C56XDZYDKX11</example>
     /// </summary>
-    public Ulid StatusId { get; set; }
+    public string StatusId { get; set; }
     
     /// <summary>
     /// Gets or Sets the Category Details.
@@ -66,7 +66,7 @@ public sealed class WorkItem : TrackableEntity
     /// Gets or Sets the Unique Identifier of Category.
     /// <example>01JMBBYXZP1PR67EFEHTK9JQCJ</example>
     /// </summary>
-    public Ulid CategoryId { get; set; }
+    public string CategoryId { get; set; }
     
     /// <summary>
     /// Gets or Sets the WorkItem Business Requirement Information.
@@ -84,7 +84,7 @@ public sealed class WorkItem : TrackableEntity
     /// Gets or Sets the Unique Identifier of WorkItem
     /// <example></example>
     /// </summary>
-    public Ulid? ParentWorkItemId { get; set; }
+    public string ParentWorkItemId { get; set; }
     
     /// <summary>
     /// Gets or Sets the days to complete WorkItem.

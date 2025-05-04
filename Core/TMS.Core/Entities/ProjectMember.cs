@@ -10,13 +10,13 @@ public sealed class ProjectMember : TrackableEntity
     /// Gets or Sets the Unique Identifier for ProjectMember.
     /// <example>01JM6XC67ZMNQN2W3P63RG98KP</example>
     /// </summary>
-    public Ulid Id { get; set; }
+    public string Id { get; set; }
     
     /// <summary>
     /// Gets or Sets the Unique Identifier of Project.
     /// <example>01JM6XD97M4S0Y7WC1RXYQJMHS</example>
     /// </summary>
-    public Ulid ProjectId { get; set; }
+    public string ProjectId { get; set; }
     
     /// <summary>
     /// Gets or Sets the Project Details.
@@ -27,7 +27,7 @@ public sealed class ProjectMember : TrackableEntity
     /// Gets or Sets the Unique Identifier of Employee.
     /// <example>01JMAE893SDEJZX5K190SNA6V8</example>
     /// </summary>
-    public Ulid EmployeeId { get; set; }
+    public string EmployeeId { get; set; }
     
     /// <summary>
     /// Gets or Sets the Employee Details.
@@ -38,7 +38,7 @@ public sealed class ProjectMember : TrackableEntity
     /// Gets or Sets the Unique Identifier of Project Role.
     /// <example>01JMAFJXZN4Y27C56XDZYDKX11</example>
     /// </summary>
-    public Ulid RoleId { get; set; }
+    public string RoleId { get; set; }
     
     /// <summary>
     /// Gets or Sets the ProjectRole Details.

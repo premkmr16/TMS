@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
 using TMS.Application.Features.Employees.Contracts.Create;
@@ -73,28 +74,28 @@ public class EmployeeValidator : IEmployeeValidator
             HelperName, methodName, newEmployeeNumber, newEmailAddress);
     }
 
-    /// <inheritdoc cref="IEmployeeValidator.ValidateUpdateEmployeeRequestAsync"/>
-    public async Task ValidateUpdateEmployeeRequestAsync(string employeeNumber, string emailAddress,
-        ValidationContext<UpdateEmployeeRequest> context)
+    public async Task ValidateEmployeeEndDate<T>(
+        string employeeTypeId, DateTimeOffset startDate, DateTimeOffset endDate, ValidationContext<T> context)
     {
-        const string methodName = nameof(ValidateUpdateEmployeeRequestAsync);
+        const string methodName = nameof(ValidateEmployeeEndDate);
 
         _logger.LogInformation(
-            "{Helper}.{Method} - Execution started successfully with input : {EmployeeNumber} and {EmailAddress}",
-            HelperName, methodName, employeeNumber, emailAddress);
+            "{Helper}.{Method} - Execution started successfully with input : {EmployeeTypeId} and {StartDate} and {EndDate} ",
+            HelperName, methodName, employeeTypeId, startDate, endDate);
 
-        var employee = await _employeeReadRepository.GetEmployeeByNumberOrEmail(employeeNumber);
+        var employeeType = await _employeeReadRepository.GetEmployeeType(employeeTypeId);
 
-        if (employee.FirstOrDefault() is null)
-            context.AddFailure(nameof(UpdateEmployeeRequest.EmployeeNumber),
-                string.Format(EmployeeValidationMessages.EmployeeNotFound, employeeNumber));
+        if (employeeType is { Type: "Contractor" or "Intern" } && endDate < startDate.AddMonths(1))
+            context.AddFailure(nameof(CreateEmployeeRequest.EndDate),
+                string.Format(ValidationMessages.EndDateTooSoon, nameof(CreateEmployeeRequest.EndDate),
+                    startDate.AddMonths(1).Date.ToShortDateString()));
+        
+        else if (employeeType is not { Type: "Contractor" or "Intern" } && endDate != DateTimeOffset.MinValue)
+            context.AddFailure(nameof(CreateEmployeeRequest.EndDate),
+                EmployeeValidationMessages.EndDateShouldBeNull);
+      
 
-        if (!string.Equals(emailAddress, employee.First().Email, StringComparison.OrdinalIgnoreCase))
-            context.AddFailure(nameof(UpdateEmployeeRequest.Email), EmployeeValidationMessages.EmailNotEditable);
-
-        _logger.LogInformation(
-            "{Helper}.{Method} - Execution completed successfully for input : {EmployeeNumber} and {EmailAddress}",
-            HelperName, methodName, employeeNumber, emailAddress);
+        _logger.LogInformation("{Helper}.{Method} - Execution completed successfully", HelperName, methodName);
     }
     
     #endregion
@@ -102,7 +103,7 @@ public class EmployeeValidator : IEmployeeValidator
     #region EmployeeType Validation Methods
 
     /// <inheritdoc cref="IEmployeeValidator.ValidateEmployeeTypeAsync"/>
-    public async Task<bool> ValidateEmployeeTypeAsync(Ulid employeeTypeId)
+    public async Task<bool> ValidateEmployeeTypeAsync(string employeeTypeId)
     {
         const string methodName = nameof(ValidateEmployeeTypeAsync);
 
@@ -110,7 +111,7 @@ public class EmployeeValidator : IEmployeeValidator
             "{Helper}.{Method} - Execution started successfully with input : {EmployeeTypeId} ", employeeTypeId,
             HelperName, methodName);
 
-        var employeeType = await _employeeReadRepository.GetEmployeeType(employeeTypeId.ToString());
+        var employeeType = await _employeeReadRepository.GetEmployeeType(employeeTypeId);
 
         _logger.LogInformation(
             "{Helper}.{Method} - Execution completed successfully with output : {EmployeeType}",

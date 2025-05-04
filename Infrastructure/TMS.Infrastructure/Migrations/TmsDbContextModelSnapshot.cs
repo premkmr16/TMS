@@ -61,6 +61,9 @@ namespace TMS.Infrastructure.Migrations
                     b.Property<DateTimeOffset>("CreatedOn")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<DateTime>("DateOfBirth")
+                        .HasColumnType("date");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("varchar(50)");
@@ -76,10 +79,10 @@ namespace TMS.Infrastructure.Migrations
                     b.Property<DateTimeOffset>("EndDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<bool>("IsActive")
+                    b.Property<bool?>("IsActive")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("boolean")
-                        .HasDefaultValue(true);
+                        .HasDefaultValueSql("true");
 
                     b.Property<string>("ModifiedBy")
                         .HasColumnType("varchar(50)");
@@ -350,6 +353,7 @@ namespace TMS.Infrastructure.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("ParentWorkItemId")
+                        .IsRequired()
                         .HasColumnType("varchar(26)");
 
                     b.Property<string>("PriorityId")

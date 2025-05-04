@@ -16,10 +16,14 @@ public class EmployeeMapper :  IRegister
     /// <param name="config"></param>
     public void Register(TypeAdapterConfig config)
     {
-        config.NewConfig<CreateEmployeeRequest, Employee>();
+        config.NewConfig<CreateEmployeeRequest, Employee>()
+            .Map(dest => dest.Id, _ => Ulid.Empty);
         config.NewConfig<UpdateEmployeeRequest, Employee>();
         config.NewConfig<Employee, CreateEmployeeResponse>();
         config.NewConfig<Employee, UpdateEmployeeResponse>();
+        
+        config.NewConfig<CreateEmployeeTypeRequest, EmployeeType>()
+            .Map(dest => dest.Id, _ => Ulid.Empty);
         config.NewConfig<CreateEmployeeTypeRequest, EmployeeTypeResponse>();
     }
 }

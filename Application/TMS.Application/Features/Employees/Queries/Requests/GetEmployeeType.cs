@@ -7,4 +7,4 @@ namespace TMS.Application.Features.Employees.Queries.Requests;
 /// 
 /// </summary>
 /// <param name="EmployeeTypeId"></param>
-public record GetEmployeeType(Ulid EmployeeTypeId) : IRequest<EmployeeTypeResponse>;
+public record GetEmployeeType(string EmployeeTypeId) : IRequest<EmployeeTypeResponse>;

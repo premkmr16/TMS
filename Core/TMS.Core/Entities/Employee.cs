@@ -10,7 +10,7 @@ public sealed class Employee : TrackableEntity
     /// Gets or Sets the Unique Identifier for Employee.
     /// <example>01JM6XC67ZMNQN2W3P63RG98KP</example>
     /// </summary>
-    public Ulid Id { get; set; }
+    public string Id { get; set; }
     
     /// <summary>
     /// Gets or Sets the Unique Number for Employee.
@@ -37,10 +37,16 @@ public sealed class Employee : TrackableEntity
     public string Phone { get; set; }
     
     /// <summary>
+    /// Gets or Sets the Employee Date of Birth.
+    /// <example>11-04-2000</example>
+    /// </summary>
+    public DateTime DateOfBirth { get; set; }
+    
+    /// <summary>
     /// Gets or Sets the UniqueId of EmployeeType.
     /// <example>01JM6XD97M4S0Y7WC1RXYQJMHS</example>
     /// </summary>
-    public Ulid EmployeeTypeId { get; set; }
+    public string EmployeeTypeId { get; set; }
     
     /// <summary>
     /// Gets or sets the type of Employee.
@@ -51,7 +57,7 @@ public sealed class Employee : TrackableEntity
     /// Gets or Sets the employee is active or inactive.
     /// <example>true</example>
     /// </summary>
-    public bool IsActive { get; set; }
+    public bool? IsActive { get; set; }
     
     /// <summary>
     /// Gets or Sets the start date of employee.

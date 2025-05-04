@@ -16,7 +16,7 @@ public class WorkItemEntityTypeConfiguration : IEntityTypeConfiguration<WorkItem
     public void Configure(EntityTypeBuilder<WorkItem> builder)
     {
         builder.HasKey(x => x.Id);
-        builder.Property(e => e.Id).HasColumnType("varchar(26)").HasConversion(v => v.ToString(), v => Ulid.Parse(v));
+        builder.Property(e => e.Id).HasColumnType("varchar(26)").IsRequired();
         builder.Property(x => x.WorkItemId).ValueGeneratedOnAdd();
         builder.Property(x => x.MemberId).HasColumnType("varchar(26)").IsRequired();
         builder.Property(x => x.Title).HasColumnType("varchar(200)").IsRequired();
@@ -26,7 +26,7 @@ public class WorkItemEntityTypeConfiguration : IEntityTypeConfiguration<WorkItem
         builder.Property(x => x.StoryPoints).HasColumnType("integer");
         builder.Property(x => x.StatusId).HasColumnType("varchar(26)").IsRequired();
         builder.Property(x => x.PriorityId).HasColumnType("varchar(26)").IsRequired();
-        builder.Property(x => x.ParentWorkItemId).HasColumnType("varchar(26)").HasConversion(v  => v.ToString(), v => Ulid.Parse(v));
+        builder.Property(x => x.ParentWorkItemId).HasColumnType("varchar(26)").IsRequired();
         builder.Property(x => x.CategoryId).HasColumnType("varchar(26)").IsRequired();
         builder.Property(x => x.CreatedBy).HasColumnType("varchar(50)").IsRequired();
         builder.Property(x => x.CreatedOn).HasColumnType("timestamp with time zone").IsRequired();

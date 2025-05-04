@@ -87,7 +87,7 @@ public class AddEmployeeHandler : IRequestHandler<AddEmployee, CreateEmployeeRes
         if (!createEmployeeRequestValidationResult.IsValid)
             throw new ValidationException(createEmployeeRequestValidationResult.Errors);
 
-        var employee = _mapper.Map<Employee>(request);
+        var employee = _mapper.Map<Employee>(request.CreateEmployee);
         var addedEmployee = await _employeeWriteRepository.AddEmployee(employee);
 
         var response = _mapper.Map<CreateEmployeeResponse>(addedEmployee);

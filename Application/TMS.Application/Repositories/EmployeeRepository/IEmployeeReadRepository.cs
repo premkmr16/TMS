@@ -1,3 +1,4 @@
+using TMS.Application.Common.Models;
 using TMS.Application.Features.Employees.Contracts.Get;
 using TMS.Core.Entities;
 
@@ -14,12 +15,19 @@ public interface IEmployeeReadRepository
     /// <param name="employeeId">Defines the unique Id of employee</param>
     /// <returns>The employee <see cref="EmployeeResponse"/></returns>
     public Task<EmployeeResponse> GetEmployee(string employeeId);
+
+    /// <summary>
+    /// Implements the functionality to return the Employee data for the given EmployeeID.
+    /// </summary>
+    /// <param name="employeeId">Defines the unique Id of employee</param>
+    /// <returns>The employee <see cref="Employee"/></returns>
+    public Task<Employee> GetEmployeeWithoutTypeName(string employeeId);
     
     /// <summary>
     /// Implements the functionality to return all Employee data.
     /// </summary>
     /// <returns>The list of employees <see cref="List{EmployeeResponse}"/></returns>
-    public Task<List<EmployeeResponse>> GetEmployees();
+    public Task<PaginatedResponse<EmployeeResponse>> GetEmployees(PaginationRequest request);
     
     /// <summary>
     /// Implements the functionality to return the Employee data for the given Employee EmailAddress.

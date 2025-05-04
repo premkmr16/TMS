@@ -10,7 +10,7 @@ public sealed class ProjectRole : TrackableEntity
     /// Gets or Sets the Unique Identifier for ProjectRole.
     /// <example>01JM6XC67ZMNQN2W3P63RG98KP</example>
     /// </summary>
-    public Ulid Id { get; set; }
+    public string Id { get; set; }
     
     /// <summary>
     /// Gets or Sets the ProjectRole Name.

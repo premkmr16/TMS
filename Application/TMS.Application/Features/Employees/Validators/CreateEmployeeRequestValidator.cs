@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using FluentValidation;
 using TMS.Application.Features.Employees.Contracts.Create;
 using TMS.Application.Features.Employees.ValidationHelpers;
@@ -19,8 +20,8 @@ public class CreateEmployeeRequestValidator : AbstractValidator<CreateEmployeeRe
     /// </summary>
     public CreateEmployeeRequestValidator(IEmployeeValidator employeeValidator)
     {
-        RuleLevelCascadeMode = CascadeMode.Stop;
-
+         RuleLevelCascadeMode = CascadeMode.Stop;
+        
         RuleFor(createEmployeeRequest => createEmployeeRequest.EmployeeNumber)
             .Must(employeeNumber => !string.IsNullOrWhiteSpace(employeeNumber))
             .WithMessage(string.Format(ValidationMessages.CannotBeNullOrEmpty, nameof(CreateEmployeeRequest.EmployeeNumber)));
@@ -29,29 +30,29 @@ public class CreateEmployeeRequestValidator : AbstractValidator<CreateEmployeeRe
             .Must(employeeName => !string.IsNullOrWhiteSpace(employeeName))
             .WithMessage(string.Format(ValidationMessages.CannotBeNullOrEmpty, nameof(CreateEmployeeRequest.Name)));
 
+        RuleFor(createEmployeeRequest => createEmployeeRequest.DateOfBirth)
+            .Must(dateOfBirth => dateOfBirth != DateTime.MinValue && dateOfBirth != DateTime.MaxValue)
+            .WithMessage(string.Format(ValidationMessages.CannotBeNullOrEmpty, nameof(CreateEmployeeRequest.DateOfBirth)))
+            .Must(dateOfBirth => DateTime.Today >= dateOfBirth.AddYears(18))
+            .WithMessage(EmployeeValidationMessages.InvalidDateOfBirth);
+
         RuleFor(createEmployeeRequest => createEmployeeRequest.Email)
             .Must(emailAddress => !string.IsNullOrWhiteSpace(emailAddress))
             .WithMessage(string.Format(ValidationMessages.CannotBeNullOrEmpty, nameof(CreateEmployeeRequest.Email)))
             .EmailAddress()
             .WithMessage(createEmployeeRequest => string.Format(ValidationMessages.InvalidEmail, createEmployeeRequest.Email));
 
-        RuleFor(createEmployeeRequest => createEmployeeRequest.EmployeeTypeId.ToString())
+        RuleFor(createEmployeeRequest => createEmployeeRequest.EmployeeTypeId)
             .Must(employeeTypeId => !string.IsNullOrWhiteSpace(employeeTypeId))
             .WithMessage(string.Format(ValidationMessages.CannotBeNullOrEmpty, nameof(CreateEmployeeRequest.EmployeeTypeId)))
             .Length(26)
-            .WithMessage(string.Format(ValidationMessages.InvalidUlidLength, nameof(CreateEmployeeRequest.EmployeeTypeId)))
-            .Matches(RegexValidation.UlidRegexPattern)
-            .WithMessage(createEmployeeRequest => string.Format(ValidationMessages.InvalidUlidFormat, nameof(CreateEmployeeRequest.EmployeeTypeId), createEmployeeRequest.EmployeeTypeId));
-
+            .WithMessage(string.Format(ValidationMessages.InvalidStringLength, nameof(CreateEmployeeRequest.EmployeeTypeId)))
+            .Matches(RegexValidation.StringRegexPattern)
+            .WithMessage(createEmployeeRequest => string.Format(ValidationMessages.InvalidStringFormat, nameof(CreateEmployeeRequest.EmployeeTypeId), createEmployeeRequest.EmployeeTypeId));
+        
         RuleFor(createEmployeeRequest => createEmployeeRequest.StartDate)
             .Must(startDate => startDate != DateTimeOffset.MinValue)
             .WithMessage(createEmployeeRequest => string.Format(ValidationMessages.InvalidDateFormat, nameof(CreateEmployeeRequest.StartDate), createEmployeeRequest.StartDate));
-
-        RuleFor(createEmployeeRequest => createEmployeeRequest.EndDate)
-            .GreaterThanOrEqualTo(createEmployeeRequest => createEmployeeRequest.StartDate.AddMonths(1))
-            .WithMessage(createEmployeeRequest => string.Format(ValidationMessages.EndDateTooSoon, nameof(CreateEmployeeRequest.EndDate), createEmployeeRequest.EndDate))
-            .WhenAsync(async (createEmployeeRequest, cancellationToken) => 
-                !createEmployeeRequest.IsVerified && await employeeValidator.ValidateEmployeeTypeAsync(createEmployeeRequest.EmployeeTypeId));
         
         RuleFor(createEmployeeRequest => createEmployeeRequest.Phone)
             .Must(phone => !string.IsNullOrWhiteSpace(phone))
@@ -64,10 +65,20 @@ public class CreateEmployeeRequestValidator : AbstractValidator<CreateEmployeeRe
         RuleFor(createEmployeeRequest => createEmployeeRequest)
             .CustomAsync(async (createEmployeeRequest, context, cancellationToken) => 
                 await employeeValidator.ValidateCreateEmployeeRequestAsync(createEmployeeRequest.EmployeeNumber, createEmployeeRequest.Email, context))
-            .When(createEmployeeRequest => 
-                !createEmployeeRequest.IsVerified && 
-                !string.IsNullOrWhiteSpace(createEmployeeRequest.Email) && 
-                !string.IsNullOrWhiteSpace(createEmployeeRequest.EmployeeNumber));
+            .When(createEmployeeRequest =>
+                !createEmployeeRequest.IsVerified &&
+                !string.IsNullOrWhiteSpace(createEmployeeRequest.Email) &&
+                !string.IsNullOrWhiteSpace(createEmployeeRequest.EmployeeNumber)
+            );
+        
+        RuleFor(createEmployeeRequest => createEmployeeRequest)
+            .CustomAsync(async (createEmployeeRequest, context, cancellationToken) => 
+                await employeeValidator.ValidateEmployeeEndDate(
+                    createEmployeeRequest.EmployeeTypeId, createEmployeeRequest.StartDate, createEmployeeRequest.EndDate, context))
+            .When(createEmployeeRequest =>
+                !createEmployeeRequest.IsVerified &&
+                Regex.IsMatch(createEmployeeRequest.EmployeeTypeId, RegexValidation.StringRegexPattern)
+            );
     }
     
     #endregion

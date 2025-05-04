@@ -9,7 +9,7 @@ public static class EmployeeType
     
     public const string AddEmployeeType = "add";
     
-    public const string GetEmployeeTypes= "get";
+    public const string GetEmployeeTypes = "get";
     
     public const string GetEmployeeType= "{employeeTypeId}";
 }

@@ -10,7 +10,7 @@ public sealed class Project : TrackableEntity
     /// Gets or Sets the Unique Identifier for Project.
     /// <example>1JM6XC67ZMNQN2W3P63RG98KP</example>
     /// </summary>
-    public Ulid Id { get; set; }
+    public string Id { get; set; }
     
     /// <summary>
     /// Gets or Sets the Title of Project.

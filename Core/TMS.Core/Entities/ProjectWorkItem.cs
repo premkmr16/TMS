@@ -10,7 +10,7 @@ public class ProjectWorkItem
     /// Gets or Sets the Unique Identifier for Project.
     /// <example>1JM6XC67ZMNQN2W3P63RG98KP</example>
     /// </summary>
-    public Ulid ProjectId { get; set; }
+    public string ProjectId { get; set; }
     
     /// <summary>
     /// Gets or Sets the Category Type of WorkItem.

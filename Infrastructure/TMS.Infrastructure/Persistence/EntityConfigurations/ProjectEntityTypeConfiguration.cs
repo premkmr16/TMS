@@ -16,7 +16,7 @@ public class ProjectEntityTypeConfiguration : IEntityTypeConfiguration<Project>
     public void Configure(EntityTypeBuilder<Project> builder)
     {
         builder.HasKey(x => x.Id);
-        builder.Property(e => e.Id).HasColumnType("varchar(26)").HasConversion(v => v.ToString(), v => Ulid.Parse(v));
+        builder.Property(e => e.Id).HasColumnType("varchar(26)").IsRequired();
         builder.Property(x => x.Title).HasColumnType("varchar(100)").IsRequired();
         builder.Property(x => x.StartDate).HasColumnType("timestamp with time zone").IsRequired();
         builder.Property(x => x.EndDate).HasColumnType("timestamp with time zone").IsRequired();

@@ -9,22 +9,22 @@ public class BaseEmployeeContract
     public string Name { get; set; }
     
     /// <summary>
-    /// Gets or sets the Employee Name.
-    /// <example>819101</example>
-    /// </summary>
-    public string EmployeeNumber { get; set; }
-    
-    /// <summary>
-    /// Gets or sets the Employee EmailAddress.
-    /// <example>johndoe@gmail.com</example>
-    /// </summary>
-    public string Email { get; set; }
-    
-    /// <summary>
     /// Gets or Sets the Employee Contact Number.
     /// <example>8719106611</example>
     /// </summary>
     public string Phone { get; set; }
+    
+    /// <summary>
+    /// Gets or Sets the Employee Date of Birth.
+    /// <example>11-04-2000</example>
+    /// </summary>
+    public DateTime DateOfBirth { get; set; }
+    
+    /// <summary>
+    /// Gets or Sets the UniqueId of EmployeeType.
+    /// <example>01JM6XD97M4S0Y7WC1RXYQJMHS</example>
+    /// </summary>
+    public string EmployeeTypeId { get; set; }
     
     /// <summary>
     /// Gets or Sets the start date of employee.

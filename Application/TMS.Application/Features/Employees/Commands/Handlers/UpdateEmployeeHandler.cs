@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 using TMS.Application.Features.Employees.Commands.Requests;
 using TMS.Application.Features.Employees.Contracts.Update;
 using TMS.Application.Repositories.EmployeeRepository;
-using TMS.Core.Entities;
+using static TMS.Core.Common.Errors.ErrorMessages;
 
 namespace TMS.Application.Features.Employees.Commands.Handlers;
 
@@ -25,7 +25,12 @@ public class UpdateEmployeeHandler : IRequestHandler<UpdateEmployee, UpdateEmplo
     /// Defines the Employee Repository for performing employee related write operations.
     /// </summary>
     private readonly IEmployeeWriteRepository _employeeWriteRepository;
-    
+
+    /// <summary>
+    /// Defines the Employee Repository for performing employee related write operations.
+    /// </summary>
+    private readonly IEmployeeReadRepository _employeeReadRepository;
+
     /// <summary>
     /// Defines the validator for validating <see cref="UpdateEmployeeRequest"/>.
     /// </summary>
@@ -49,16 +54,19 @@ public class UpdateEmployeeHandler : IRequestHandler<UpdateEmployee, UpdateEmplo
     /// Initializes the new instance of <see cref="UpdateEmployeeHandler"/>.
     /// </summary>
     /// <param name="employeeWriteRepository">Defines the Employee Repository <see cref="IEmployeeWriteRepository"/>.</param>
+    /// <param name="employeeReadRepository">Defines the Employee Repository <see cref="IEmployeeReadRepository"/>.</param>
     /// <param name="updateEmployeeRequestValidator">Defines the validator of <see cref="UpdateEmployeeRequest"/>.</param>
     /// <param name="mapper">Defines the Mapper of Employee <see cref="IMapper"/>.</param>
     /// <param name="logger">Defines the logger instance of <see cref="UpdateEmployeeHandler"/>.</param>
     public UpdateEmployeeHandler(
         IEmployeeWriteRepository employeeWriteRepository,
+        IEmployeeReadRepository employeeReadRepository,
         IValidator<UpdateEmployeeRequest> updateEmployeeRequestValidator,
         IMapper mapper,
         ILogger<UpdateEmployeeHandler> logger)
     {
         _employeeWriteRepository = employeeWriteRepository;
+        _employeeReadRepository = employeeReadRepository;
         _updateEmployeeRequestValidator = updateEmployeeRequestValidator;
         _mapper = mapper;
         _logger = logger;
@@ -81,15 +89,20 @@ public class UpdateEmployeeHandler : IRequestHandler<UpdateEmployee, UpdateEmplo
         _logger.LogInformation("{Handler}.{Method} - Execution started successfully with input : {@Employee}",
             HandlerName, methodName, request.Employee);
 
-        var updateEmployeeRequestValidatorResult =
+        var updateEmployeeRequestValidatorResult = 
             await _updateEmployeeRequestValidator.ValidateAsync(request.Employee, cancellationToken);
 
         if (!updateEmployeeRequestValidatorResult.IsValid)
             throw new ValidationException(updateEmployeeRequestValidatorResult.Errors);
 
-        var employee = _mapper.Map<Employee>(request);
-        var updatedEmployee = await _employeeWriteRepository.UpdateEmployee(employee);
+        var existingEmployee = await _employeeReadRepository.GetEmployeeWithoutTypeName(request.Employee.Id);
 
+        if (existingEmployee is null) 
+            throw new InvalidOperationException(string.Format(EmployeeValidationMessages.EmployeeNotFound, request.Employee.Id));
+
+        _mapper.Map(request.Employee, existingEmployee);
+
+        var updatedEmployee = await _employeeWriteRepository.UpdateEmployee(existingEmployee);
         var response = _mapper.Map<UpdateEmployeeResponse>(updatedEmployee);
 
         _logger.LogInformation("{Handler}.{Method} - Execution completed successfully with output : {@Employee}",

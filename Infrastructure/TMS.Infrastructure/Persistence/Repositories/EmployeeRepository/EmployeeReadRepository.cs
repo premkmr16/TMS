@@ -1,6 +1,9 @@
 using System.Data;
+using System.Text.Json;
 using Dapper;
+using DocumentFormat.OpenXml.Office2010.ExcelAc;
 using Microsoft.Extensions.Logging;
+using TMS.Application.Common.Models;
 using TMS.Application.ConnectionFactory;
 using TMS.Application.Features.Employees.Contracts.Get;
 using TMS.Application.Repositories.EmployeeRepository;
@@ -67,7 +70,33 @@ public class EmployeeReadRepository : IEmployeeReadRepository
 
         var employee =
             await connection.QueryFirstOrDefaultAsync<EmployeeResponse>(
-                sql: EmployeeQueries.GetEmployeeByIdQuery,
+                sql: EmployeeQueries.GetEmployeeByIdWithEmployeeTypeNameQuery,
+                param: new { EmployeeId = employeeId },
+                commandType: CommandType.Text,
+                commandTimeout: 10);
+
+        _logger.LogInformation("{Repository}.{Method} - Execution completed successfully with output : {@Employee}",
+            RepositoryName, methodName, employee);
+
+        return employee;
+    }
+    
+    /// <inheritdoc cref="IEmployeeReadRepository.GetEmployee"/>
+    public async Task<Employee> GetEmployeeWithoutTypeName(string employeeId)
+    {
+        const string methodName = nameof(GetEmployeeWithoutTypeName);
+
+        _logger.LogInformation("{Repository}.{Method} - Execution started successfully with input : {EmployeeId}",
+            RepositoryName, methodName, employeeId);
+
+        var connection = _connectionFactory.CreateConnection();
+
+        _logger.LogDebug("{Repository}.{Method} - Established connection to Database Successfully", RepositoryName,
+            methodName);
+
+        var employee =
+            await connection.QueryFirstOrDefaultAsync<Employee>(
+                sql: EmployeeQueries.GetEmployeeByIdWithoutEmployeeTypeNameQuery,
                 param: new { EmployeeId = employeeId },
                 commandType: CommandType.Text,
                 commandTimeout: 10);
@@ -79,7 +108,7 @@ public class EmployeeReadRepository : IEmployeeReadRepository
     }
 
     /// <inheritdoc cref="IEmployeeReadRepository.GetEmployees"/>
-    public async Task<List<EmployeeResponse>> GetEmployees()
+    public async Task<PaginatedResponse<EmployeeResponse>> GetEmployees(PaginationRequest request)
     {
         const string methodName = nameof(GetEmployees);
 
@@ -91,15 +120,26 @@ public class EmployeeReadRepository : IEmployeeReadRepository
             methodName);
 
         var employees =
-            (await connection.QueryAsync<EmployeeResponse>(
+            await connection.QueryFirstOrDefaultAsync<string>(
                 sql: EmployeeQueries.GetEmployeesQuery,
+                param: new
+                {
+                    request.SortField, request.SortDirection, request.PageSize, request.PageNumber,
+                    Filters = request.Filters is { Count: > 0 } ? JsonSerializer.Serialize(request.Filters) : "{}",
+                    request.FetchWithPagination
+                },
                 commandType: CommandType.Text,
-                commandTimeout: 10)).ToList();
+                commandTimeout: 10
+            );
+
+        var employeeResponse =
+            JsonSerializer.Deserialize<PaginatedResponse<EmployeeResponse>>(
+                employees, new JsonSerializerOptions { WriteIndented = true });
 
         _logger.LogInformation("{Repository}.{Method} - Execution completed successfully with output : {@Employees}",
-            RepositoryName, methodName, employees);
+            RepositoryName, methodName, employeeResponse);
 
-        return employees;
+        return employeeResponse;
     }
 
     /// <inheritdoc cref="IEmployeeReadRepository.GetEmployeeByNumberOrEmail"/>
@@ -120,7 +160,7 @@ public class EmployeeReadRepository : IEmployeeReadRepository
         var employee =
             (await connection.QueryAsync<EmployeeResponse>(
                 sql: EmployeeQueries.GetEmployeeByEmailOrEmployeeNumberQuery,
-                param: new { EmailAddress = emailAddress },
+                param: new { EmailAddress = emailAddress, EmployeeNumber = employeeNumber },
                 commandType: CommandType.Text,
                 commandTimeout: 10)).ToList();
 

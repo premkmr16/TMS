@@ -1,5 +1,6 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
+using TMS.Application.Common.Models;
 using TMS.Application.Features.Employees.Contracts.Get;
 using TMS.Application.Features.Employees.Queries.Requests;
 using TMS.Application.Repositories.EmployeeRepository;
@@ -9,10 +10,10 @@ namespace TMS.Application.Features.Employees.Queries.Handlers;
 /// <summary>
 /// Handles the process to get all Employees.
 /// </summary>
-public class GetEmployeesHandler : IRequestHandler<GetEmployees, List<EmployeeResponse>>
+public class GetEmployeesHandler : IRequestHandler<GetEmployees, PaginatedResponse<EmployeeResponse>>
 {
     #region Fields
-    
+
     /// <summary>
     /// The name of the handler used for logging.
     /// </summary>
@@ -27,9 +28,9 @@ public class GetEmployeesHandler : IRequestHandler<GetEmployees, List<EmployeeRe
     /// Defines the  Logger instance for capturing <see cref="GetEmployeesHandler"/> logs.
     /// </summary>
     private readonly ILogger<GetEmployeesHandler> _logger;
-    
+
     #endregion
-    
+
     #region Constructors
 
     /// <summary>
@@ -44,7 +45,7 @@ public class GetEmployeesHandler : IRequestHandler<GetEmployees, List<EmployeeRe
         _employeeReadRepository = employeeReadRepository;
         _logger = logger;
     }
-    
+
     #endregion
 
     #region Handler
@@ -55,19 +56,20 @@ public class GetEmployeesHandler : IRequestHandler<GetEmployees, List<EmployeeRe
     /// <param name="request"></param>
     /// <param name="cancellationToken">A token to observe for cancellation requests.</param>
     /// <returns>Returns List of Employee Response</returns>
-    public async Task<List<EmployeeResponse>> Handle(GetEmployees request, CancellationToken cancellationToken)
+    public async Task<PaginatedResponse<EmployeeResponse>> Handle(GetEmployees request,
+        CancellationToken cancellationToken)
     {
         const string methodName = nameof(Handle);
 
         _logger.LogInformation("[{Handler}].[{Method}] - Execution started successfully", HandlerName, methodName);
 
-        var employees = await _employeeReadRepository.GetEmployees();
+        var employees = await _employeeReadRepository.GetEmployees(request.PaginationRequest);
 
         _logger.LogInformation("[{Handler}].[{Method}] - Execution completed successfully with output : {@Employees}",
             HandlerName, methodName, employees);
 
         return employees;
     }
-    
+
     #endregion
 }
