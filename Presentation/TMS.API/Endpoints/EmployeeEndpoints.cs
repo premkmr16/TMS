@@ -4,6 +4,7 @@ using TMS.Application.Features.Employees.Commands.Requests;
 using TMS.Application.Features.Employees.Contracts.Create;
 using TMS.Application.Features.Employees.Contracts.Update;
 using TMS.Application.Features.Employees.Queries.Requests;
+using TMS.Core.Common;
 using TMS.Core.Endpoints;
 using UpdateEmployee = TMS.Application.Features.Employees.Commands.Requests.UpdateEmployee;
 
@@ -64,7 +65,8 @@ public static class EmployeeEndpoints
                 {
                     var logger = loggerFactory.CreateLogger(nameof(EmployeeEndpoints));
 
-                    logger.LogInformation("[{Group}].[{API}] - execution started successfully", Employee.EmployeeGroup.Group,
+                    logger.LogInformation("[{Group}].[{API}] - execution started successfully",
+                        Employee.EmployeeGroup.Group,
                         Employee.GetEmployees);
 
                     var employeeResponse =
@@ -80,7 +82,6 @@ public static class EmployeeEndpoints
             .WithTags("Employee")
             .WithName("GetEmployeesEndpoint")
             .WithSummary("Returns all employee records.");
-        ;
 
         #endregion
 
@@ -113,7 +114,6 @@ public static class EmployeeEndpoints
             .WithTags("Employee")
             .WithName("GetEmployeeEndpoint")
             .WithSummary("Returns employee for the given employee id.");
-        ;
 
         #endregion
 
@@ -147,68 +147,66 @@ public static class EmployeeEndpoints
             .WithTags("Employee")
             .WithName("GetEmployeeByNumberOrEmailEndpoint")
             .WithSummary("Returns employee for the given employee number or email.");
-        ;
 
         #endregion
 
         #region Update
 
         employeeGroup.MapPut(Employee.UpdateEmployee,
-            async (UpdateEmployeeRequest employeeRequest,
-                IMediator mediator,
-                ILoggerFactory loggerFactory,
-                CancellationToken cancellationToken) =>
-            {
-                var logger = loggerFactory.CreateLogger(nameof(EmployeeEndpoints));
+                async (UpdateEmployeeRequest employeeRequest,
+                    IMediator mediator,
+                    ILoggerFactory loggerFactory,
+                    CancellationToken cancellationToken) =>
+                {
+                    var logger = loggerFactory.CreateLogger(nameof(EmployeeEndpoints));
 
-                logger.LogInformation(
-                    "[{Group}].[{API}] - execution started successfully with input Employee : {@EmployeeRequest}",
-                    Employee.EmployeeGroup.Group, Employee.UpdateEmployee, employeeRequest);
+                    logger.LogInformation(
+                        "[{Group}].[{API}] - execution started successfully with input Employee : {@EmployeeRequest}",
+                        Employee.EmployeeGroup.Group, Employee.UpdateEmployee, employeeRequest);
 
-                var employeeResponse = await mediator.Send(
-                    new UpdateEmployee(employeeRequest), cancellationToken);
+                    var employeeResponse = await mediator.Send(
+                        new UpdateEmployee(employeeRequest), cancellationToken);
 
-                logger.LogInformation(
-                    "[{Group}].[{API}] - execution completed successfully with output : {@EmployeeResponse}",
-                    Employee.EmployeeGroup.Group, Employee.UpdateEmployee, employeeResponse);
+                    logger.LogInformation(
+                        "[{Group}].[{API}] - execution completed successfully with output : {@EmployeeResponse}",
+                        Employee.EmployeeGroup.Group, Employee.UpdateEmployee, employeeResponse);
 
-                return employeeResponse is not null
-                    ? Results.Ok(employeeResponse)
-                    : Results.UnprocessableEntity();
-            }
-        )
-        .WithTags("Employee")
-        .WithName("UpdateEmployeeEndpoint")
-        .WithSummary("updates employees info except employee number and email.");
+                    return employeeResponse is not null
+                        ? Results.Ok(employeeResponse)
+                        : Results.UnprocessableEntity();
+                }
+            )
+            .WithTags("Employee")
+            .WithName("UpdateEmployeeEndpoint")
+            .WithSummary("updates employees info except employee number and email.");
 
         #endregion
 
         #region Export
-        
+
         employeeGroup.MapPost(Employee.ExportEmployee,
-            async (IMediator mediator,
-                ILoggerFactory loggerFactory,
-                CancellationToken cancellationToken) =>
-            {
-                var logger = loggerFactory.CreateLogger(nameof(EmployeeEndpoints));
+                async (IMediator mediator,
+                    ILoggerFactory loggerFactory,
+                    CancellationToken cancellationToken) =>
+                {
+                    var logger = loggerFactory.CreateLogger(nameof(EmployeeEndpoints));
 
-                logger.LogInformation(
-                    "[{Group}].[{API}] - execution started successfully",
-                    Employee.EmployeeGroup.Group, Employee.ExportEmployee);
+                    logger.LogInformation(
+                        "[{Group}].[{API}] - execution started successfully", Employee.EmployeeGroup.Group,
+                        Employee.ExportEmployee);
 
-                var bytes = await mediator.Send(new ExportEmployees(), cancellationToken);
+                    var bytes = await mediator.Send(new ExportEmployees(), cancellationToken);
 
-                logger.LogInformation("[{Group}].[{API}] - execution completed successfully", Employee.EmployeeGroup.Group, Employee.ExportEmployee);
+                    logger.LogInformation("[{Group}].[{API}] - execution completed successfully",
+                        Employee.EmployeeGroup.Group, Employee.ExportEmployee);
 
-                return Results.File(bytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                    "employees.xlsx");
-            }
-        )
-        .WithTags("Employee")
-        .WithName("ExportEmployeeEndpoint")
-        .WithSummary("Exports all employee information to Excel.");
-        
+                    return Results.File(bytes, ExcelConstants.Excel.ContentType, ExcelConstants.Employee.FileName);
+                }
+            )
+            .WithTags("Employee")
+            .WithName("ExportEmployeeEndpoint")
+            .WithSummary("Exports all employee information to Excel.");
+
         #endregion
-        
     }
 }

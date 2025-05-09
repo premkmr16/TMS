@@ -9,30 +9,29 @@ using static TMS.Core.Common.ExcelConstants;
 namespace TMS.Application.Features.Employees.Queries.Handlers;
 
 /// <summary>
-/// 
+/// Handles the process to export all the employee information to excel
 /// </summary>
 public class ExportEmployeeHandler : IRequestHandler<ExportEmployees, byte[]>
 {
-
     #region Fields
     
     /// <summary>
-    /// 
+    /// The name of the handler used for logging.
     /// </summary>
     private const string HandlerName = nameof(ExportEmployeeHandler);
     
     /// <summary>
-    /// 
+    /// Defines the Mediator instance used to send commands and queries.
     /// </summary>
     private readonly IMediator _mediator;
 
     /// <summary>
-    /// 
+    /// Defines the Helper service for Excel related operations.
     /// </summary>
     private readonly IExcelHelper _excelHelper;
 
     /// <summary>
-    /// 
+    /// Defines the  Logger instance for capturing <see cref="ExportEmployeeHandler"/> logs.
     /// </summary>
     private readonly ILogger<ExportEmployeeHandler> _logger;
     
@@ -41,19 +40,19 @@ public class ExportEmployeeHandler : IRequestHandler<ExportEmployees, byte[]>
     #region Contructors
 
     /// <summary>
-    /// 
+    /// Initializes the new instance of <see cref="ExportEmployeeHandler"/>
     /// </summary>
-    /// <param name="mediator"></param>
-    /// <param name="logger"></param>
-    /// <param name="excelHelper"></param>
+    /// <param name="mediator">Defines the Mediator <see cref="IMediator"/></param>
+    /// <param name="excelHelper">Defines the Excel helper <see cref="IExcelHelper"/></param>
+    /// <param name="logger">Defines the logger instance of <see cref="ExportEmployeeHandler"/></param>
     public ExportEmployeeHandler(
         IMediator mediator,
-        ILogger<ExportEmployeeHandler> logger,
-        IExcelHelper excelHelper)
+        IExcelHelper excelHelper,
+        ILogger<ExportEmployeeHandler> logger)
     {
         _mediator = mediator;
-        _logger = logger;
         _excelHelper = excelHelper;
+        _logger = logger;
     }
     
     #endregion
@@ -61,12 +60,11 @@ public class ExportEmployeeHandler : IRequestHandler<ExportEmployees, byte[]>
     #region Handlers
 
     /// <summary>
-    /// 
+    /// The Handler method implements the functionality to export all the employee information to excel.
     /// </summary>
     /// <param name="request"></param>
-    /// <param name="cancellationToken"></param>
-    /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
+    /// <param name="cancellationToken">A token to observe for cancellation requests</param>
+    /// <returns>The employee byte array that is to be stored in Excel file</returns>
     public async Task<byte[]> Handle(ExportEmployees request, CancellationToken cancellationToken)
     {
         const string methodName = nameof(Handle);

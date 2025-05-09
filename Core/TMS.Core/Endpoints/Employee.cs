@@ -18,4 +18,6 @@ public static class Employee
     public const string UpdateEmployee = "update";
     
     public const string ExportEmployee = "Export";
+    
+    public const string ImportEmployee = "Import";
 }       
