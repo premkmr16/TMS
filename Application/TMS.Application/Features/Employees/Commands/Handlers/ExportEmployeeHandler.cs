@@ -2,11 +2,12 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 using TMS.Application.Common.Excel.Requests;
 using TMS.Application.Common.Helpers;
+using TMS.Application.Features.Employees.Commands.Requests;
 using TMS.Application.Features.Employees.Contracts.Get;
 using TMS.Application.Features.Employees.Queries.Requests;
 using static TMS.Core.Common.ExcelConstants;
 
-namespace TMS.Application.Features.Employees.Queries.Handlers;
+namespace TMS.Application.Features.Employees.Commands.Handlers;
 
 /// <summary>
 /// Handles the process to export all the employee information to excel
