@@ -1,4 +1,5 @@
 using System.Text.Json;
+using FluentValidation;
 using MapsterMapper;
 using MediatR;
 using Microsoft.Extensions.Logging;
@@ -30,11 +31,16 @@ public class ImportEmployeeHandler : IRequestHandler<ImportEmployees>
     /// 
     /// </summary>
     private readonly IEmployeeWriteRepository _employeeWriteRepository;
-    
+
     /// <summary>
     /// 
     /// </summary>
     private readonly IEmployeeReadRepository _employeeReadRepository;
+
+    /// <summary>
+    /// 
+    /// </summary>
+    private readonly IValidator<ImportEmployeeRequest> _importEmployeeRequestValidator;
 
     /// <summary>
     /// 
@@ -57,16 +63,20 @@ public class ImportEmployeeHandler : IRequestHandler<ImportEmployees>
     /// <param name="mapper"></param>
     /// <param name="employeeWriteRepository"></param>
     /// <param name="employeeReadRepository"></param>
+    /// <param name="importEmployeeRequestValidator"></param>
     /// <param name="logger"></param>
     public ImportEmployeeHandler(
         IMediator mediator,
         IMapper mapper,
         IEmployeeWriteRepository employeeWriteRepository,
         IEmployeeReadRepository employeeReadRepository,
+        IValidator<ImportEmployeeRequest> importEmployeeRequestValidator,
         ILogger<ImportEmployeeHandler> logger)
     {
         _mediator = mediator;
         _employeeWriteRepository = employeeWriteRepository;
+        _employeeReadRepository = employeeReadRepository;
+        _importEmployeeRequestValidator = importEmployeeRequestValidator;
         _mapper = mapper;
         _logger = logger;
     }
@@ -89,9 +99,19 @@ public class ImportEmployeeHandler : IRequestHandler<ImportEmployees>
             HandlerName, methodName, request.File.FileName);
 
         var excelData = await _mediator.Send(new ExtractInformation(request.File), cancellationToken);
-
         var importRequest = JsonSerializer.Deserialize<List<ImportEmployeeRequest>>(excelData);
-        
+
+        var employeeTypes = await _employeeReadRepository.GetEmployeeTypes();
+        var allEmployeeTypes = employeeTypes.Select(x => x.Type).ToList();
+        var specialEmployeeTypes = employeeTypes.Where(x => x.Type is "Contractor" or "Intern").Select(x => x.Type).ToList();
+
+        var importEmployeeRequestValidationResult = await _importEmployeeRequestValidator.ValidateAsync(
+            new ValidationContext<List<ImportEmployeeRequest>>(importRequest) 
+                { RootContextData = { ["employeeTypes"] = allEmployeeTypes, ["specialEmployeeTypes"] = specialEmployeeTypes } }, cancellationToken);
+
+        if (!importEmployeeRequestValidationResult.IsValid)
+            throw new ValidationException(importEmployeeRequestValidationResult.Errors);
+
         _logger.LogInformation("[{Handler}].[{Method}] - Execution completed successfully", HandlerName, methodName);
     }
 

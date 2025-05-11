@@ -35,6 +35,7 @@ public static class ErrorMessages
         public const string EmployeeNotFound = "No employee record found with the provided employee number : {0}";
         public const string InvalidDateOfBirth = "The employee should be atleast 18 years old.";
         public const string EndDateShouldBeNull = "The end date should not be given for non contractor employee.";
+        public const string InvalidEmployeeType = "The employee type '{0}' does not exist.";
     }
     
     public static class EmployeeTypeValidationMessages
