@@ -102,9 +102,11 @@ public class ImportEmployeeHandler : IRequestHandler<ImportEmployees>
         var importRequest = JsonSerializer.Deserialize<List<ImportEmployeeRequest>>(excelData);
 
         var employeeTypes = await _employeeReadRepository.GetEmployeeTypes();
+        
         var allEmployeeTypes = employeeTypes.Select(x => x.Type).ToList();
-        var specialEmployeeTypes =
-            employeeTypes.Where(x => x.Type is "Contractor" or "Intern").Select(x => x.Type).ToList();
+        var specialEmployeeTypes = employeeTypes
+            .Where(x => x.Type is "Contractor" or "Intern").Select(x => x.Type)
+            .ToList();
 
         var importEmployeeRequestValidationResult = await _importEmployeeRequestValidator.ValidateAsync(
             new ValidationContext<List<ImportEmployeeRequest>>(importRequest)

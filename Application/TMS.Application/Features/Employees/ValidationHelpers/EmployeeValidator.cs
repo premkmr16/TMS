@@ -3,7 +3,6 @@ using FluentValidation;
 using Microsoft.Extensions.Logging;
 using TMS.Application.Features.Employees.Contracts.Create;
 using TMS.Application.Features.Employees.Contracts.Get;
-using TMS.Application.Features.Employees.Contracts.Update;
 using TMS.Application.Repositories.EmployeeRepository;
 using static TMS.Core.Common.Errors.ErrorMessages;
 
