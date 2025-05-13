@@ -208,5 +208,34 @@ public static class EmployeeEndpoints
             .WithSummary("Exports all employee information to Excel.");
 
         #endregion
+        
+        #region Import
+
+        employeeGroup.MapPost(Employee.ImportEmployee,
+                async (IFormFile file,
+                    IMediator mediator,
+                    ILoggerFactory loggerFactory,
+                    CancellationToken cancellationToken) =>
+                {
+                    var logger = loggerFactory.CreateLogger(nameof(EmployeeEndpoints));
+
+                    logger.LogInformation(
+                        "[{Group}].[{API}] - execution started successfully", Employee.EmployeeGroup.Group,
+                        Employee.ImportEmployee);
+
+                    await mediator.Send(new ImportEmployees(file), cancellationToken);
+
+                    logger.LogInformation("[{Group}].[{API}] - execution completed successfully",
+                        Employee.EmployeeGroup.Group, Employee.ImportEmployee);
+
+                    return Results.Ok();
+                }
+            )
+            .WithTags("Employee")
+            .WithName("ImportEmployeeEndpoint")
+            .WithSummary("Import all employee information to database.")
+            .DisableAntiforgery();
+
+        #endregion
     }
 }

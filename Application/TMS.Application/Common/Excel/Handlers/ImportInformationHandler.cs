@@ -61,7 +61,7 @@ public class ExtractInformationHandler : IRequestHandler<ExtractInformation, str
         var rows = worksheet.RangeUsed()!.RowsUsed();
 
         var headerRow = rows.First();
-        var headers = headerRow.Cells().Select(header => header.ToString()).ToList();
+        var headers = headerRow.Cells().Select(header => header.Value.ToString().Replace(" ", "")).ToList();
 
         foreach (var row in rows.Skip(1))
         {
