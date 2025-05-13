@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Text.Json;
 using ClosedXML.Excel;
 using MediatR;
@@ -60,8 +61,11 @@ public class ExtractInformationHandler : IRequestHandler<ExtractInformation, str
         var worksheet = workbook.Worksheets.First();
         var rows = worksheet.RangeUsed()!.RowsUsed();
 
+        var text = CultureInfo.CurrentCulture.TextInfo;
         var headerRow = rows.First();
-        var headers = headerRow.Cells().Select(header => header.Value.ToString().Replace(" ", "")).ToList();
+        var headers = headerRow.Cells()
+            .Select(header => text.ToTitleCase(header.Value.ToString()).Replace(" ", ""))
+            .ToList();
 
         foreach (var row in rows.Skip(1))
         {

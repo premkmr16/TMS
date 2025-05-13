@@ -6,12 +6,6 @@ namespace TMS.Application.Features.Employees.Contracts.Create;
 public class ImportEmployeeRequest
 {
     /// <summary>
-    /// Gets or Sets the Unique Identifier for Employee.
-    /// <example>01JM6XC67ZMNQN2W3P63RG98KP</example>
-    /// </summary>
-    public string Id { get; set; }
-    
-    /// <summary>
     /// Gets or Sets the Unique Number for Employee.
     /// <example>89101</example>
     /// </summary>
