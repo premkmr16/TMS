@@ -1,3 +1,6 @@
+using System.Text.Json.Serialization;
+using TMS.Application.Common.Converters;
+
 namespace TMS.Application.Features.Employees.Contracts.Create;
 
 /// <summary>
@@ -33,6 +36,7 @@ public class ImportEmployeeRequest
     /// Gets or Sets the Employee Date of Birth.
     /// <example>11-04-2000</example>
     /// </summary>
+    [JsonConverter(typeof(GenericDateConvertor<DateTime>))]
     public DateTime DateOfBirth { get; set; }
     
     /// <summary>
@@ -45,11 +49,13 @@ public class ImportEmployeeRequest
     /// Gets or Sets the start date of employee.
     /// <example>2024-09-25 02:55:03</example>
     /// </summary>
+    [JsonConverter(typeof(GenericDateConvertor<DateTimeOffset>))]
     public DateTimeOffset StartDate { get; set; }
     
     /// <summary>
     /// Gets or Sets the end date of employee.
     /// <example>2026-10-27 08:27:25</example>
     /// </summary>
+    [JsonConverter(typeof(GenericDateConvertor<DateTimeOffset>))]
     public DateTimeOffset? EndDate { get; set; }
 }

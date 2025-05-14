@@ -13,21 +13,21 @@ namespace TMS.Application.Common.Excel.Handlers;
 public class ExtractInformationHandler : IRequestHandler<ExtractInformation, string>
 {
     #region Fields
-    
+
     /// <summary>
     /// 
     /// </summary>
     private const string HandlerName = nameof(ExtractInformationHandler);
-    
+
     /// <summary>
     /// 
     /// </summary>
     private readonly ILogger<ExtractInformationHandler> _logger;
-    
+
     #endregion
-    
+
     #region Constructors
-    
+
     /// <summary>
     /// 
     /// </summary>
@@ -36,11 +36,11 @@ public class ExtractInformationHandler : IRequestHandler<ExtractInformation, str
     {
         _logger = logger;
     }
-    
+
     #endregion
-    
+
     #region Handlers
-    
+
     /// <summary>
     /// 
     /// </summary>
@@ -50,13 +50,15 @@ public class ExtractInformationHandler : IRequestHandler<ExtractInformation, str
     public async Task<string> Handle(ExtractInformation request, CancellationToken cancellationToken)
     {
         const string methodName = nameof(Handle);
-        
+
+        _logger.LogInformation("[{Handler}].[{Method}] - Execution started successfully", HandlerName, methodName);
+
         var data = new List<Dictionary<string, string>>();
-        
+
         var stream = new MemoryStream();
         await request.ExcelFile.CopyToAsync(stream, cancellationToken);
         stream.Position = 0;
-        
+
         var workbook = new XLWorkbook(stream);
         var worksheet = workbook.Worksheets.First();
         var rows = worksheet.RangeUsed()!.RowsUsed();
@@ -77,12 +79,16 @@ public class ExtractInformationHandler : IRequestHandler<ExtractInformation, str
             }
             data.Add(rowData);
         }
-        
-        var result =  JsonSerializer.Serialize(
+
+        var result = JsonSerializer.Serialize(
             data, new JsonSerializerOptions { WriteIndented = true });
+
+        _logger.LogInformation(
+            "[{Handler}].[{Method}] - Execution completed successfully with output : {ExtractedData}", HandlerName,
+            methodName, result);
 
         return result;
     }
-    
+
     #endregion
 }
