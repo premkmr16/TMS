@@ -40,7 +40,7 @@ public class ImportEmployeeHandler : IRequestHandler<ImportEmployees>
     /// <summary>
     /// 
     /// </summary>
-    private readonly IValidator<ImportEmployeeRequest> _importEmployeeRequestValidator;
+    private readonly IValidator<ImportEmployee> _importEmployeeRequestValidator;
 
     /// <summary>
     /// 
@@ -70,7 +70,7 @@ public class ImportEmployeeHandler : IRequestHandler<ImportEmployees>
         IMapper mapper,
         IEmployeeWriteRepository employeeWriteRepository,
         IEmployeeReadRepository employeeReadRepository,
-        IValidator<ImportEmployeeRequest> importEmployeeRequestValidator,
+        IValidator<ImportEmployee> importEmployeeRequestValidator,
         ILogger<ImportEmployeeHandler> logger)
     {
         _mediator = mediator;
@@ -99,7 +99,7 @@ public class ImportEmployeeHandler : IRequestHandler<ImportEmployees>
             HandlerName, methodName, request.File.FileName);
 
         var excelData = await _mediator.Send(new ExtractInformation(request.File), cancellationToken);
-        var importRequest = JsonSerializer.Deserialize<List<ImportEmployeeRequest>>(excelData);
+        var importRequest = new ImportEmployee { ImportEmployeeRequests = JsonSerializer.Deserialize<List<ImportEmployeeRequest>>(excelData) };
 
         var employeeTypes = await _employeeReadRepository.GetEmployeeTypes();
         
@@ -109,7 +109,7 @@ public class ImportEmployeeHandler : IRequestHandler<ImportEmployees>
             .ToList();
 
         var importEmployeeRequestValidationResult = await _importEmployeeRequestValidator.ValidateAsync(
-            new ValidationContext<List<ImportEmployeeRequest>>(importRequest)
+            new ValidationContext<ImportEmployee>(importRequest)
             {
                 RootContextData =
                 {
@@ -117,6 +117,7 @@ public class ImportEmployeeHandler : IRequestHandler<ImportEmployees>
                     ["specialEmployeeTypes"] = specialEmployeeTypes
                 }
             }, cancellationToken);
+        
 
         if (!importEmployeeRequestValidationResult.IsValid)
             throw new ValidationException(importEmployeeRequestValidationResult.Errors);

@@ -8,7 +8,7 @@ namespace TMS.Application.Features.Employees.Validators;
 /// <summary>
 /// 
 /// </summary>
-public class ImportEmployeeRequestListValidator :  AbstractValidator<List<ImportEmployeeRequest>>
+public class ImportEmployeeRequestListValidator :  AbstractValidator<ImportEmployee>
 {
     /// <summary>
     /// 
@@ -18,13 +18,14 @@ public class ImportEmployeeRequestListValidator :  AbstractValidator<List<Import
     {
         RuleLevelCascadeMode = CascadeMode.Stop;
 
-        RuleForEach(x => x).SetValidator(validator);
+        RuleForEach(x => x.ImportEmployeeRequests)
+            .SetValidator(validator);
 
-        RuleFor(employees => employees)
+        RuleFor(employee => employee.ImportEmployeeRequests)
             .SetValidator(new DistinctItemValidator<ImportEmployeeRequest, string>
                 (nameof(ImportEmployeeRequest.Email), x => x.Email));
         
-        RuleFor(employees => employees)
+        RuleFor(employee => employee.ImportEmployeeRequests)
             .SetValidator(new DistinctItemValidator<ImportEmployeeRequest, string>
                 (nameof(ImportEmployeeRequest.EmployeeNumber), x => x.EmployeeNumber));
     }

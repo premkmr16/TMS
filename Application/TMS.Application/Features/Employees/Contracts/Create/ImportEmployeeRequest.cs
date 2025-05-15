@@ -59,3 +59,11 @@ public class ImportEmployeeRequest
     [JsonConverter(typeof(GenericDateConvertor<DateTimeOffset>))]
     public DateTimeOffset? EndDate { get; set; }
 }
+
+/// <summary>
+/// 
+/// </summary>
+public class ImportEmployee
+{
+    public List<ImportEmployeeRequest> ImportEmployeeRequests { get; set; }
+}
