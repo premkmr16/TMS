@@ -118,7 +118,6 @@ public class ImportEmployeeHandler : IRequestHandler<ImportEmployees>
                 }
             }, cancellationToken);
         
-
         if (!importEmployeeRequestValidationResult.IsValid)
             throw new ValidationException(importEmployeeRequestValidationResult.Errors);
 

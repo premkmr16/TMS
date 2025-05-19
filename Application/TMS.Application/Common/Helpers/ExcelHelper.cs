@@ -2,8 +2,12 @@ using TMS.Application.Common.Models;
 
 namespace TMS.Application.Common.Helpers;
 
+/// <summary>
+/// 
+/// </summary>
 public class ExcelHelper : IExcelHelper
 {
+    /// <inheritdoc cref="IExcelHelper.BuildExcelRequest{T}"/>
     public ExportExcelRequest BuildExcelRequest<T>(
         List<string> headers, Func<T, List<string>> mapToRow, List<T> data, string workSheetName, string fileName)
     {
@@ -16,6 +20,7 @@ public class ExcelHelper : IExcelHelper
         };
     }
 
+    /// <inheritdoc cref="IExcelHelper.BuildDefaultExcelPaginationRequest"/>
     public PaginationRequest BuildDefaultExcelPaginationRequest(string sortField)
     {
         return new PaginationRequest

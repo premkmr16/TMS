@@ -80,9 +80,8 @@ public class ImportEmployeeRequestListValidator :  AbstractValidator<ImportEmplo
                 .WithMessage(createEmployeeRequest => string.Format(ValidationMessages.InvalidDateFormat, nameof(ImportEmployeeRequest.StartDate), createEmployeeRequest.StartDate));
             
             RuleFor(x => x)
-                .Must(x => x.EndDate > x.StartDate.AddMonths(1))
-                .WithMessage(x => string.Format(ValidationMessages.EndDateTooSoon, 
-                    nameof(ImportEmployeeRequest.EndDate), x.StartDate.AddMonths(1).Date.ToShortDateString()))
+                .Must(x => x.EndDate >= x.StartDate.AddMonths(1))
+                .WithMessage(x => string.Format(ValidationMessages.EndDateTooSoon, nameof(ImportEmployeeRequest.EndDate), x.StartDate.AddMonths(1).Date.ToShortDateString()))
                 .When((x, context) =>
                     context.RootContextData.TryGetValue("specialEmployeeTypes", out var employeeTypes) &&
                     employeeTypes is List<string> validEmployeeTypes &&
