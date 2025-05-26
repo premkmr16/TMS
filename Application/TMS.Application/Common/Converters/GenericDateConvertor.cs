@@ -29,17 +29,21 @@ public class GenericDateConvertor<T> : JsonConverter<T>
 
         if (string.IsNullOrWhiteSpace(str))
         {
-            if (typeof(T) == typeof(DateTime)) return (T)(object)DateTime.MinValue;
-          
-            if (typeof(T) == typeof(DateTimeOffset)) return (T)(object)DateTimeOffset.MinValue;
+            if (typeof(T) == typeof(DateTime)) 
+                return (T)(object)DateTime.MinValue;
+
+            if (typeof(T) == typeof(DateTimeOffset)) 
+                return (T)(object)DateTimeOffset.MinValue;
         }
         else
         {
-            if (typeof(T) == typeof(DateTime)) return (T)(object)DateTime.ParseExact(str, DateFormat, CultureInfo.InvariantCulture);
-           
-            if (typeof(T) == typeof(DateTimeOffset)) return (T)(object)DateTimeOffset.ParseExact(str!, DateFormat, CultureInfo.CurrentCulture);
+            if (typeof(T) == typeof(DateTime))
+                return (T)(object)DateTime.ParseExact(str, DateFormat, CultureInfo.InvariantCulture);
+
+            if (typeof(T) == typeof(DateTimeOffset))
+                return (T)(object)DateTimeOffset.ParseExact(str!, DateFormat, CultureInfo.CurrentCulture);
         }
-        
+
         throw new NotSupportedException();
     }
 
@@ -52,10 +56,16 @@ public class GenericDateConvertor<T> : JsonConverter<T>
     /// <exception cref="NotSupportedException"></exception>
     public override void Write(Utf8JsonWriter writer, T value, JsonSerializerOptions options)
     {
-        if (value is DateTime dateTime) writer.WriteStringValue(dateTime == DateTime.MinValue ? string.Empty : dateTime.ToString(DateFormat));
-        
-        else if (value is DateTimeOffset dateTimeOffset) writer.WriteStringValue(dateTimeOffset == DateTimeOffset.MinValue ? string.Empty : dateTimeOffset.ToString(DateFormat));
-        
+        if (value is DateTime dateTime)
+            writer.WriteStringValue(dateTime == DateTime.MinValue 
+                ? string.Empty 
+                : dateTime.ToString(DateFormat));
+
+        else if (value is DateTimeOffset dateTimeOffset)
+            writer.WriteStringValue(dateTimeOffset == DateTimeOffset.MinValue
+                ? string.Empty
+                : dateTimeOffset.ToString(DateFormat));
+
         else throw new NotSupportedException();
     }
 }

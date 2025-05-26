@@ -65,5 +65,8 @@ public class ImportEmployeeRequest
 /// </summary>
 public class ImportEmployee
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public List<ImportEmployeeRequest> ImportEmployeeRequests { get; set; }
 }

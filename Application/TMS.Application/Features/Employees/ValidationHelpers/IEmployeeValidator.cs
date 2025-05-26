@@ -44,4 +44,14 @@ public interface IEmployeeValidator
     /// <returns>The <see cref="Task"/></returns>
     public Task ValidateEmployeeEndDate<T>(string employeeTypeId, DateTimeOffset startDate, DateTimeOffset endDate,
         ValidationContext<T> context);
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="employeeIds"></param>
+    /// <param name="emails"></param>
+    /// <param name="context"></param>
+    /// <returns></returns>
+    public Task ValidateExcelEmployeeData(
+        List<string> employeeIds, List<string> emails, ValidationContext<ImportEmployee> context);
 }

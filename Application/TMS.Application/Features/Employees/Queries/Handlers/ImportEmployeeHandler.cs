@@ -103,9 +103,11 @@ public class ImportEmployeeHandler : IRequestHandler<ImportEmployees>
 
         var employeeTypes = await _employeeReadRepository.GetEmployeeTypes();
         
-        var allEmployeeTypes = employeeTypes.Select(x => x.Type).ToList();
-        var specialEmployeeTypes = employeeTypes
-            .Where(x => x.Type is "Contractor" or "Intern").Select(x => x.Type)
+        var employeeTypeNames = employeeTypes.Select(x => x.Type).ToList();
+        
+        var contractOrInternTypeNames = employeeTypes
+            .Where(x => x.Type is "Contractor" or "Intern")
+            .Select(x => x.Type)
             .ToList();
 
         var importEmployeeRequestValidationResult = await _importEmployeeRequestValidator.ValidateAsync(
@@ -113,8 +115,8 @@ public class ImportEmployeeHandler : IRequestHandler<ImportEmployees>
             {
                 RootContextData =
                 {
-                    ["employeeTypes"] = allEmployeeTypes,
-                    ["specialEmployeeTypes"] = specialEmployeeTypes
+                    ["employeeTypes"] = employeeTypeNames,
+                    ["specialEmployeeTypes"] = contractOrInternTypeNames
                 }
             }, cancellationToken);
         

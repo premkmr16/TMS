@@ -96,7 +96,13 @@ public class EmployeeValidator : IEmployeeValidator
 
         _logger.LogInformation("{Helper}.{Method} - Execution completed successfully", HelperName, methodName);
     }
-    
+
+    public Task ValidateExcelEmployeeData(
+        List<string> employeeIds, List<string> emails, ValidationContext<ImportEmployee> context)
+    {
+        throw new NotImplementedException();
+    }
+
     #endregion
     
     #region EmployeeType Validation Methods
