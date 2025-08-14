@@ -54,10 +54,32 @@ public sealed class Employee : TrackableEntity
     public EmployeeType EmployeeType { get; set; }
     
     /// <summary>
+    /// Gets or Sets the UniqueId of EmployeeRole.
+    /// <example>01JM6XD97M4S0Y7WC1RXYQJMHS</example>
+    /// </summary>
+    public string RoleId { get; set; }
+    
+    /// <summary>
+    /// Gets or sets the role of Employee.
+    /// </summary>
+    public EmployeeRole Role { get; set; }
+    
+    /// <summary>
+    /// Gets or Sets the UniqueId of EmployeeRole.
+    /// <example>01JM6XD97M4S0Y7WC1RXYQJMHS</example>
+    /// </summary>
+    public string ManagerId { get; set; }
+    
+    /// <summary>
+    /// Gets or sets the manager for employee
+    /// </summary>
+    public Employee Manager { get; set; }
+    
+    /// <summary>
     /// Gets or Sets the employee is active or inactive.
     /// <example>true</example>
     /// </summary>
-    public bool? IsActive { get; set; }
+    public bool IsActive { get; set; }
     
     /// <summary>
     /// Gets or Sets the start date of employee.

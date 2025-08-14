@@ -46,12 +46,12 @@ public interface IEmployeeValidator
         ValidationContext<T> context);
 
     /// <summary>
-    /// 
+    /// Implements the functionality to check employee information from Excel file.
     /// </summary>
-    /// <param name="employeeIds"></param>
-    /// <param name="emails"></param>
-    /// <param name="context"></param>
-    /// <returns></returns>
+    /// <param name="employeeIds">The unique Number assigned to employee during creation.</param>
+    /// <param name="emails">The unique Email assigned to employee during creation.</param>
+    /// <param name="context">The employee validation context to capture validation errors.</param>
+    /// <returns>he <see cref="Task"/>.</returns>
     public Task ValidateExcelEmployeeData(
         List<string> employeeIds, List<string> emails, ValidationContext<ImportEmployee> context);
 }

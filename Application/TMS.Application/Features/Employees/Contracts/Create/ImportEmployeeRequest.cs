@@ -9,22 +9,10 @@ namespace TMS.Application.Features.Employees.Contracts.Create;
 public class ImportEmployeeRequest
 {
     /// <summary>
-    /// Gets or Sets the Unique Number for Employee.
-    /// <example>89101</example>
-    /// </summary>
-    public string EmployeeNumber { get; set; }
-    
-    /// <summary>
     /// Gets or sets the Employee Name.
     /// <example>John Doe</example>
     /// </summary>
     public string Name { get; set; }
-    
-    /// <summary>
-    /// Gets or sets the Employee EmailAddress.
-    /// <example>johndoe@gmail.com</example>
-    /// </summary>
-    public string Email { get; set; }
     
     /// <summary>
     /// Gets or Sets the Employee Contact Number.
@@ -38,6 +26,12 @@ public class ImportEmployeeRequest
     /// </summary>
     [JsonConverter(typeof(GenericDateConvertor<DateTime>))]
     public DateTime DateOfBirth { get; set; }
+    
+    /// <summary>
+    /// Gets or Sets the UniqueId of EmployeeType.
+    /// <example>01JM6XD97M4S0Y7WC1RXYQJMHS</example>
+    /// </summary>
+    public string EmployeeTypeId { get; set; }
     
     /// <summary>
     /// Gets or Sets the UniqueId of EmployeeType.
@@ -57,7 +51,19 @@ public class ImportEmployeeRequest
     /// <example>2026-10-27 08:27:25</example>
     /// </summary>
     [JsonConverter(typeof(GenericDateConvertor<DateTimeOffset>))]
-    public DateTimeOffset? EndDate { get; set; }
+    public DateTimeOffset EndDate { get; set; }
+    
+    /// <summary>
+    /// Gets or Sets the Unique Number for Employee.
+    /// <example>89101</example>
+    /// </summary>
+    public string EmployeeNumber { get; set; }
+    
+    /// <summary>
+    /// Gets or sets the Employee EmailAddress.
+    /// <example>johndoe@gmail.com</example>
+    /// </summary>
+    public string Email { get; set; }
 }
 
 /// <summary>

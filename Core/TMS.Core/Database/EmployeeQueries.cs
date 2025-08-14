@@ -138,4 +138,17 @@ public static class EmployeeQueries
             employeeType."ModifiedBy"
         FROM "EmployeeTypes" employeeType
         """;
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public const string GetUniqueEmployeeIdentifiers = 
+        """
+        SELECT 
+            employee."EmployeeNumber",
+            employee."Email"
+        FROM "Employees" employee
+        WHERE employee."EmployeeNumber" IN (@EmployeeNumbers) OR 
+              employee."Email" IN (@Emails)
+        """;
 }

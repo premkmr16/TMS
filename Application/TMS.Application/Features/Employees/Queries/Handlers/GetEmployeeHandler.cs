@@ -1,5 +1,6 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
+using TMS.Application.DataHandler;
 using TMS.Application.Features.Employees.Contracts.Get;
 using TMS.Application.Features.Employees.Queries.Requests;
 using TMS.Application.Repositories.EmployeeRepository;
@@ -19,9 +20,14 @@ public class GetEmployeeHandler : IRequestHandler<GetEmployee, EmployeeResponse>
     private const string HandlerName = nameof(GetEmployeeHandler);
 
     /// <summary>
-    /// Defines the Employee Repository for performing employee related write operations.
+    /// Defines the Employee Repository for performing employee related read operations.
     /// </summary>
     private readonly IEmployeeReadRepository _employeeReadRepository;
+    
+    /// <summary>
+    /// 
+    /// </summary>
+    private readonly IDataHandler _dataHandler;
 
     /// <summary>
     /// Defines the  Logger instance for capturing <see cref="GetEmployeeHandler"/> logs.
@@ -36,12 +42,15 @@ public class GetEmployeeHandler : IRequestHandler<GetEmployee, EmployeeResponse>
     /// Initializes the new instance of <see cref="GetEmployeeHandler"/>
     /// </summary>
     /// <param name="employeeReadRepository">Defines the Employee Repository <see cref="IEmployeeReadRepository"/>.</param>
+    /// <param name="dataHandler"></param>
     /// <param name="logger">Defines the logger instance of <see cref="GetEmployeeHandler"/></param>
     public GetEmployeeHandler(
         IEmployeeReadRepository employeeReadRepository,
+        IDataHandler dataHandler,
         ILogger<GetEmployeeHandler> logger)
     {
         _employeeReadRepository = employeeReadRepository;
+        _dataHandler = dataHandler;
         _logger = logger;
     }
 
@@ -66,7 +75,9 @@ public class GetEmployeeHandler : IRequestHandler<GetEmployee, EmployeeResponse>
         if (!Ulid.TryParse(request.EmployeeId, out var employeeId) || employeeId == Ulid.Empty)
             throw new ArgumentException($"Employee Id {request.EmployeeId} is not in valid format");
         
-        var employee = await _employeeReadRepository.GetEmployee(request.EmployeeId);
+        var employee = await _dataHandler.GetOrLoadAsync(
+            request.EmployeeId, 
+            () => _employeeReadRepository.GetEmployee(request.EmployeeId));
         
         _logger.LogInformation(
             "[{Handler}].[{Method}] - Execution completed successfully with output : {@EmployeeResponse}",

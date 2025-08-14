@@ -165,11 +165,36 @@ public class EmployeeReadRepository : IEmployeeReadRepository
                 param: new { EmailAddress = emailAddress, EmployeeNumber = employeeNumber },
                 commandType: CommandType.Text,
                 commandTimeout: 10)).ToList();
-
+        
         _logger.LogInformation("{Repository}.{Method} - Execution completed successfully with output : {@Employee}",
             RepositoryName, methodName, employee);
 
         return employee;
+    }
+    
+    /// <inheritdoc cref="IEmployeeReadRepository.GetEmployeesByEmailOrNumbers"/>
+    public async Task<List<EmployeeResponse>> GetEmployeesByEmailOrNumbers(string employeeNumbers = null, string emailAddresses = null)
+    {
+        const string methodName = nameof(GetEmployeesByEmailOrNumbers);
+        
+        _logger.LogInformation("[{Repository}].[{Method}] - Execution started successfully", RepositoryName,
+            methodName);
+        
+        var connection = _connectionFactory.CreateConnection();
+        
+        _logger.LogDebug("[{Repository}].[{Method}] - Established connection to Database Successfully", RepositoryName,
+            methodName);
+        
+        var employees = (await connection.QueryAsync<EmployeeResponse>(
+            sql: EmployeeQueries.GetUniqueEmployeeIdentifiers,
+            param: new { EmployeeNumbers = string.Join(", ", employeeNumbers), Emails = emailAddresses },
+            commandType: CommandType.Text,
+            commandTimeout: 10)).ToList();
+        
+        _logger.LogInformation("{Repository}.{Method} - Execution completed successfully with output : {@Employees}",
+            RepositoryName, methodName, employees);
+
+        return employees;
     }
     
     #endregion

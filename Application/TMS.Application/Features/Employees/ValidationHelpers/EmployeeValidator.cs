@@ -1,10 +1,11 @@
-using System.Text.RegularExpressions;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
+using TMS.Application.Common.Helpers;
 using TMS.Application.Features.Employees.Contracts.Create;
 using TMS.Application.Features.Employees.Contracts.Get;
 using TMS.Application.Repositories.EmployeeRepository;
 using static TMS.Core.Common.Errors.ErrorMessages;
+using static TMS.Core.Common.Employee;
 
 namespace TMS.Application.Features.Employees.ValidationHelpers;
 
@@ -62,7 +63,7 @@ public class EmployeeValidator : IEmployeeValidator
         var existingEmployee =
             await _employeeReadRepository.GetEmployeeByNumberOrEmail(newEmployeeNumber, newEmailAddress);
 
-        if (existingEmployee.Any())
+        if (existingEmployee.Count != 0)
         {
             ValidateEmployeeNumber(existingEmployee, newEmployeeNumber, context);
             ValidateEmployeeEmailAddress(existingEmployee, newEmailAddress, context);
@@ -84,23 +85,56 @@ public class EmployeeValidator : IEmployeeValidator
 
         var employeeType = await _employeeReadRepository.GetEmployeeType(employeeTypeId);
 
-        if (employeeType is { Type: "Contractor" or "Intern" } && endDate < startDate.AddMonths(1))
-            context.AddFailure(nameof(CreateEmployeeRequest.EndDate),
-                string.Format(ValidationMessages.EndDateTooSoon, nameof(CreateEmployeeRequest.EndDate),
-                    startDate.AddMonths(1).Date.ToShortDateString()));
-        
-        else if (employeeType is not { Type: "Contractor" or "Intern" } && endDate != DateTimeOffset.MinValue)
-            context.AddFailure(nameof(CreateEmployeeRequest.EndDate),
-                EmployeeValidationMessages.EndDateShouldBeNull);
-      
+        switch (employeeType)
+        {
+            case { Type: Contractor or Intern } when !endDate.IsValidDateOffset():
+                context.AddFailure(nameof(CreateEmployeeRequest.EndDate),
+                    string.Format(ValidationMessages.InvalidDateFormat, nameof(CreateEmployeeRequest.EndDate),
+                        endDate));
+                break;
+            case { Type: Contractor or Intern } when endDate < startDate.AddMonths(1):
+                context.AddFailure(nameof(CreateEmployeeRequest.EndDate),
+                    string.Format(ValidationMessages.EndDateTooSoon, nameof(CreateEmployeeRequest.EndDate),
+                        startDate.AddMonths(1).Date.ToShortDateString()));
+                break;
+            default:
+            {
+                if (employeeType is not { Type: Contractor or Intern } && !endDate.IsValidDateOffset())
+                    context.AddFailure(nameof(CreateEmployeeRequest.EndDate),
+                        EmployeeValidationMessages.EndDateShouldBeNull);
+                break;
+            }
+        }
+
 
         _logger.LogInformation("{Helper}.{Method} - Execution completed successfully", HelperName, methodName);
     }
 
-    public Task ValidateExcelEmployeeData(
+    /// <inheritdoc cref="IEmployeeValidator.ValidateExcelEmployeeData"/>
+    public async Task ValidateExcelEmployeeData(
         List<string> employeeIds, List<string> emails, ValidationContext<ImportEmployee> context)
     {
-        throw new NotImplementedException();
+        const string methodName = nameof(ValidateExcelEmployeeData);
+
+        _logger.LogInformation(
+            "{Helper}.{Method} - Execution started successfully with input : {EmployeeNumbers}, {Emails} ",
+            HelperName, methodName, employeeIds, emails);
+
+        var existingEmployees = 
+            await _employeeReadRepository.GetEmployeesByEmailOrNumbers(string.Join(", ", employeeIds), string.Join(", ", emails));
+
+        if (existingEmployees is { Count: > 0 })
+        {
+            if (existingEmployees.Select(e => e.EmployeeNumber).Intersect(employeeIds).ToList() is { Count: > 0 } existingEmployeeNumbers)
+                context.AddFailure(nameof(ImportEmployeeRequest.EmployeeNumber),
+                    string.Format(EmployeeValidationMessages.EmployeeNumbersInuse, string.Join(", ", existingEmployeeNumbers)));
+            
+            else if (existingEmployees.Select(e => e.Email).Intersect(emails).ToList() is { Count: > 0 } existingEmployeeEmails)
+                context.AddFailure(nameof(ImportEmployeeRequest.Email),
+                    string.Format(EmployeeValidationMessages.EmployeeEmailsInuse, string.Join(", ", existingEmployeeEmails)));
+        }
+
+        _logger.LogInformation("{Helper}.{Method} - Execution completed successfully", HelperName, methodName);
     }
 
     #endregion
@@ -112,9 +146,8 @@ public class EmployeeValidator : IEmployeeValidator
     {
         const string methodName = nameof(ValidateEmployeeTypeAsync);
 
-        _logger.LogInformation(
-            "{Helper}.{Method} - Execution started successfully with input : {EmployeeTypeId} ", employeeTypeId,
-            HelperName, methodName);
+        _logger.LogInformation("{Helper}.{Method} - Execution started successfully with input : {EmployeeTypeId} ",
+            HelperName, methodName, employeeTypeId);
 
         var employeeType = await _employeeReadRepository.GetEmployeeType(employeeTypeId);
 

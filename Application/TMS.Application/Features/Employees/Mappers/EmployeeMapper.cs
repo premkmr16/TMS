@@ -25,5 +25,9 @@ public class EmployeeMapper :  IRegister
         config.NewConfig<CreateEmployeeTypeRequest, EmployeeType>()
             .Map(dest => dest.Id, _ => Ulid.Empty);
         config.NewConfig<CreateEmployeeTypeRequest, EmployeeTypeResponse>();
+        
+        config.NewConfig<ImportEmployeeRequest, Employee>()
+            .Ignore(x => x.EmployeeType)
+            .Map(dest => dest.Id, _ => Ulid.Empty);
     }
 }

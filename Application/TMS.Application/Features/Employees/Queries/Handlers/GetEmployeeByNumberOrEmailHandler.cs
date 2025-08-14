@@ -1,5 +1,6 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
+using TMS.Application.DataHandler;
 using TMS.Application.Features.Employees.Contracts.Get;
 using TMS.Application.Features.Employees.Queries.Requests;
 using TMS.Application.Repositories.EmployeeRepository;
@@ -24,6 +25,11 @@ public class GetEmployeeByNumberOrEmailHandler : IRequestHandler<GetEmployeeByNu
     private readonly IEmployeeReadRepository _employeeReadRepository;
 
     /// <summary>
+    /// 
+    /// </summary>
+    private readonly IDataHandler _dataHandler;
+
+    /// <summary>
     /// Defines the  Logger instance for capturing <see cref="GetEmployeesHandler"/> logs.
     /// </summary>
     private readonly ILogger<GetEmployeeByNumberOrEmailHandler> _logger;
@@ -36,12 +42,15 @@ public class GetEmployeeByNumberOrEmailHandler : IRequestHandler<GetEmployeeByNu
     /// Initializes the new instance of <see cref="GetEmployeeByNumberOrEmailHandler"/>
     /// </summary>
     /// <param name="employeeReadRepository">Defines the Employee Repository <see cref="IEmployeeReadRepository"/>.</param>
+    /// <param name="dataHandler"></param>
     /// <param name="logger">Defines the logger instance of <see cref="GetEmployeeByNumberOrEmailHandler"/></param>
     public GetEmployeeByNumberOrEmailHandler(
         IEmployeeReadRepository employeeReadRepository,
+        IDataHandler dataHandler,
         ILogger<GetEmployeeByNumberOrEmailHandler> logger)
     {
         _employeeReadRepository = employeeReadRepository;
+        _dataHandler = dataHandler;
         _logger = logger;
     }
     
@@ -66,8 +75,9 @@ public class GetEmployeeByNumberOrEmailHandler : IRequestHandler<GetEmployeeByNu
         if (string.IsNullOrWhiteSpace(request.EmployeeNumber) && string.IsNullOrWhiteSpace(request.EmailAddress))
             throw new InvalidOperationException("Either EmployeeNumber or EmailAddress must be provided");
 
-        var employee =
-            await _employeeReadRepository.GetEmployeeByNumberOrEmail(request.EmployeeNumber, request.EmailAddress);
+        var employee = await _dataHandler.GetOrLoadAsync(
+            $"{request.EmployeeNumber}_{request.EmailAddress}",
+            () => _employeeReadRepository.GetEmployeeByNumberOrEmail(request.EmployeeNumber, request.EmailAddress));
 
         var employeeResponse = employee.SingleOrDefault(e => 
             e.EmployeeNumber == request.EmployeeNumber || e.Email == request.EmailAddress);

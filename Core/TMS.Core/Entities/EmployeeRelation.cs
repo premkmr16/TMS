@@ -3,7 +3,7 @@ namespace TMS.Core.Entities;
 /// <summary>
 /// 
 /// </summary>
-public class EmployeeRelation : TrackableEntity
+public sealed class EmployeeRelation : TrackableEntity
 {
     /// <summary>
     /// 
@@ -13,17 +13,22 @@ public class EmployeeRelation : TrackableEntity
     /// <summary>
     /// 
     /// </summary>
-    public string EmployeeId { get; set; }
+    public string MentorId { get; set; }
     
     /// <summary>
     /// 
     /// </summary>
-    public Employee Employee { get; set; }
+    public Employee Mentor { get; set; }
     
     /// <summary>
     /// 
     /// </summary>
-    public string Relation { get; set; }
+    public string MenteeId { get; set; }
+    
+    /// <summary>
+    /// 
+    /// </summary>
+    public Employee Mentee { get; set; }
     
     /// <summary>
     /// 

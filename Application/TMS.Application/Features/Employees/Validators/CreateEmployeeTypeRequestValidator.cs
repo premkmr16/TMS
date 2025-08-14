@@ -11,14 +11,13 @@ namespace TMS.Application.Features.Employees.Validators;
 /// </summary>
 public class CreateEmployeeTypeRequestValidator  : AbstractValidator<CreateEmployeeTypeRequest>
 {
-    /// <summary>
-    /// Initializes the new instance of <see cref="CreateEmployeeTypeRequestValidator"/>
-    /// Defines validation rules for employee type Create Request.
-    /// </summary>
+   /// <summary>
+   /// Initializes the new instance of <see cref="CreateEmployeeTypeRequestValidator"/>
+   /// Defines validation rules for employee type Create Request.
+   /// </summary>
+   /// <param name="employeeValidator">Defines the custom validator <see cref="IEmployeeValidator"/></param>
     public CreateEmployeeTypeRequestValidator(IEmployeeValidator employeeValidator)
     {
-        RuleLevelCascadeMode = CascadeMode.Stop;
-        
         RuleFor(createEmployeeTypeRequest => createEmployeeTypeRequest.Type)
             .Must(employeeType => !string.IsNullOrWhiteSpace(employeeType))
             .WithMessage(string.Format(ValidationMessages.CannotBeNullOrEmpty, nameof(CreateEmployeeTypeRequest.Type)));

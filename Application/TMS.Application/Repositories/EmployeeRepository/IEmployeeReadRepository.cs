@@ -56,4 +56,12 @@ public interface IEmployeeReadRepository
     /// <param name="employeeTypeName">Defines the type of employee</param>
     /// <returns>The employee type <see cref="EmployeeType"/>.</returns>
     public Task<EmployeeType> GetEmployeeTypeByName(string employeeTypeName);
+
+    /// <summary>
+    /// Implements the functionality to return employees by Employee Numbers or Email Addresses.
+    /// </summary>
+    /// <param name="employeeNumbers">Defines the unique Number of employee.</param>
+    /// <param name="emailAddresses">Defines the unique EmailAddress of employee.</param>
+    /// <returns>The employee <see cref="EmployeeResponse"/></returns>
+    Task<List<EmployeeResponse>> GetEmployeesByEmailOrNumbers(string employeeNumbers = null, string emailAddresses = null);
 }

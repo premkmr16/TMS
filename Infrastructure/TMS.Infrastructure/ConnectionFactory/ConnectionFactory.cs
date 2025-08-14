@@ -24,6 +24,10 @@ public sealed class ConnectionFactory : IConnectionFactory
         _connectionString = configuration.GetConnectionString("DefaultConnection");
     }
     
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
     public IDbConnection CreateConnection()
     {
         return new NpgsqlConnection(_connectionString);

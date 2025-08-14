@@ -64,8 +64,8 @@ public class ExportEmployeeHandler : IRequestHandler<ExportEmployees, byte[]>
     /// The Handler method implements the functionality to export all the employee information to excel.
     /// </summary>
     /// <param name="request"></param>
-    /// <param name="cancellationToken">A token to observe for cancellation requests</param>
-    /// <returns>The employee byte array that is to be stored in Excel file</returns>
+    /// <param name="cancellationToken">A token to observe for cancellation requests.</param>
+    /// <returns>The employee byte array that is to be stored in Excel file.</returns>
     public async Task<byte[]> Handle(ExportEmployees request, CancellationToken cancellationToken)
     {
         const string methodName = nameof(Handle);
@@ -86,8 +86,8 @@ public class ExportEmployeeHandler : IRequestHandler<ExportEmployees, byte[]>
                 employee.DateOfBirth.Date.ToString(Excel.DateFormat),
                 employee.Type,
                 employee.StartDate.Date.ToString(Excel.DateFormat),
-                employee.EndDate is not null
-                    ? employee.EndDate.Value.Date.ToString(Excel.DateFormat)
+                employee.EndDate is not null 
+                    ? employee.EndDate.Value.Date.ToString(Excel.DateFormat) 
                     : string.Empty
             ], 
             employeeResponse.Data, 

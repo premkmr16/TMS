@@ -1,6 +1,7 @@
 using MapsterMapper;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using TMS.Application.DataHandler;
 using TMS.Application.Features.Employees.Contracts.Get;
 using TMS.Application.Features.Employees.Queries.Requests;
 using TMS.Application.Repositories.EmployeeRepository;
@@ -25,6 +26,11 @@ public class GetEmployeeTypeHandler : IRequestHandler<GetEmployeeType, EmployeeT
     private readonly IEmployeeReadRepository _employeeReadRepository;
 
     /// <summary>
+    /// 
+    /// </summary>
+    private readonly IDataHandler _dataHandler;
+
+    /// <summary>
     /// Defines the Mapper for transforming object properties between different models.
     /// </summary>
     private readonly IMapper _mapper;
@@ -42,14 +48,17 @@ public class GetEmployeeTypeHandler : IRequestHandler<GetEmployeeType, EmployeeT
     /// Initializes the new instance of <see cref="GetEmployeeTypeHandler"/>
     /// </summary>
     /// <param name="employeeReadRepository">Defines the Employee Repository <see cref="IEmployeeReadRepository"/>.</param>
+    /// <param name="dataHandler"></param>
     /// <param name="mapper">Defines the Mapper of EmployeeType <see cref="IMapper"/>.</param>
     /// <param name="logger">Defines the logger instance of <see cref="GetEmployeeTypeHandler"/></param>
     public GetEmployeeTypeHandler(
         IEmployeeReadRepository employeeReadRepository,
+        IDataHandler dataHandler,
         IMapper mapper,
         ILogger<GetEmployeeTypeHandler> logger)
     {
         _employeeReadRepository = employeeReadRepository;
+        _dataHandler = dataHandler;
         _mapper = mapper;
         _logger = logger;
     }
@@ -75,7 +84,9 @@ public class GetEmployeeTypeHandler : IRequestHandler<GetEmployeeType, EmployeeT
         if (!Ulid.TryParse(request.EmployeeTypeId, out var employeeTypeId) || employeeTypeId == Ulid.Empty)
             throw new ArgumentException($"Employee Type Id {request.EmployeeTypeId} is not in valid format");
 
-        var employeeType = await _employeeReadRepository.GetEmployeeType(request.EmployeeTypeId);
+        var employeeType = await _dataHandler.GetOrLoadAsync(
+            request.EmployeeTypeId, 
+            () => _employeeReadRepository.GetEmployeeType(request.EmployeeTypeId));
         
         var employeeTypeResponse = _mapper.Map<EmployeeTypeResponse>(employeeType);
         

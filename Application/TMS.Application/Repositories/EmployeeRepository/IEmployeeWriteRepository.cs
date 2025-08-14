@@ -25,13 +25,13 @@ public interface IEmployeeWriteRepository
     /// Implements the functionality to add bulk Employee data to database.
     /// </summary>
     /// <param name="employees">Defines the bulk Employee entity to be added <see cref="List{T}"/></param>
-    /// <returns></returns>
+    /// <returns>The <see cref="Task"/>.</returns>
     public Task AddEmployees(List<Employee> employees);
     
     /// <summary>
     /// Implements the functionality to add the EmployeeType data to database.
     /// </summary>
     /// <param name="employeeType">Defines the EmployeeType entity to be added <see cref="EmployeeType"/>.</param>
-    /// <returns></returns>
+    /// <returns>The <see cref="Task"/>.</returns>
     public Task<EmployeeType> AddEmployeeType(EmployeeType employeeType);
 }

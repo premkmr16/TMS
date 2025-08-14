@@ -36,6 +36,8 @@ public static class ErrorMessages
         public const string InvalidDateOfBirth = "The employee should be atleast 18 years old.";
         public const string EndDateShouldBeNull = "The end date should not be given for non contractor employee.";
         public const string InvalidEmployeeType = "The employee type '{0}' does not exist.";
+        public const string EmployeeNumbersInuse = "The following employee numbers are already in use: {0}. Please ensure that these numbers are not assigned to any existing employees before proceeding.";
+        public const string EmployeeEmailsInuse = "The following email addresses are already in use: {0}. Please ensure that these emails are not assigned to any existing employees before proceeding.";
     }
     
     public static class EmployeeTypeValidationMessages

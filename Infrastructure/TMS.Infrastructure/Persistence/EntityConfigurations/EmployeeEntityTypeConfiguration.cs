@@ -23,6 +23,8 @@ public class EmployeeEntityTypeConfiguration : IEntityTypeConfiguration<Employee
         builder.Property(x => x.DateOfBirth).HasColumnType("date").IsRequired();
         builder.Property(x => x.Phone).HasColumnType("varchar(10)").IsRequired();
         builder.Property(x => x.EmployeeTypeId).HasColumnType("varchar(26)").IsRequired();
+        builder.Property(x => x.RoleId).HasColumnType("varchar(26)").IsRequired();
+        builder.Property(x => x.ManagerId).HasColumnType("varchar(26)");
         builder.Property(x => x.IsActive).HasColumnType("boolean").HasDefaultValueSql("true");
         builder.Property(x => x.StartDate).HasColumnType("timestamp with time zone");
         builder.Property(x => x.EndDate).HasColumnType("timestamp with time zone");

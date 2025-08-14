@@ -5,7 +5,7 @@ using TMS.Application.Features.Employees.Contracts.Create;
 using TMS.Application.Features.Employees.Contracts.Update;
 using TMS.Application.Features.Employees.Queries.Requests;
 using TMS.Core.Common;
-using TMS.Core.Endpoints;
+using Employee = TMS.Core.Endpoints.Employee;
 using UpdateEmployee = TMS.Application.Features.Employees.Commands.Requests.UpdateEmployee;
 
 namespace TMS.API.Endpoints;
