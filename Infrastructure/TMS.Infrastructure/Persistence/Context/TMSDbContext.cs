@@ -21,9 +21,34 @@ public class TmsDbContext : DbContext
     public DbSet<Category> Categories { get; set; }
     
     /// <summary>
+    /// Gets or sets the <see cref="EmployeeCertifications"/> table in the database.
+    /// </summary>
+    public DbSet<EmployeeCertification> EmployeeCertifications { get; set; }
+    
+    /// <summary>
+    /// Gets or sets the <see cref="EmployeeEducations"/> table in the database.
+    /// </summary>
+    public DbSet<EmployeeEducation> EmployeeEducations { get; set; }
+    
+    /// <summary>
     /// Gets or sets the <see cref="Employees"/> table in the database.
     /// </summary>
     public DbSet<Employee> Employees { get; set; }
+    
+    /// <summary>
+    /// Gets or sets the <see cref="EmployeesIdentity"/> table in the database.
+    /// </summary>
+    public DbSet<EmployeeIdentity> EmployeesIdentity { get; set; }
+    
+    /// <summary>
+    /// Gets or sets the <see cref="EmployeeRelations"/> table in the database.
+    /// </summary>
+    public DbSet<EmployeeRelation> EmployeeRelations { get; set; }
+    
+    /// <summary>
+    /// Gets or sets the <see cref="EmployeeRoles"/> table in the database.
+    /// </summary>
+    public DbSet<EmployeeRole> EmployeeRoles { get; set; }
     
     /// <summary>
     /// Gets or sets the <see cref="EmployeeTypes"/> table in the database.
